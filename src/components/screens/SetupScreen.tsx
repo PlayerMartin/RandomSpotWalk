@@ -25,14 +25,21 @@ export function SetupScreen() {
   const gps = useGpsStore((s) => s.position);
   const gpsError = useGpsStore((s) => s.error);
   const requestCurrentPosition = useGpsStore((s) => s.requestCurrentPosition);
+  const setGpsError = useGpsStore((s) => s.setError);
   const [locating, setLocating] = useState(false);
 
-  // "Use my location" runs a fresh one-shot request every time, so enabling
-  // GPS then tapping the button works without a page refresh. It always gives
-  // feedback: a "Locating…" state while waiting, then either the start point
-  // is placed or a specific message explains why location couldn't be found.
+  // "Use my location": if we already have a fix, use it directly and skip the
+  // live request — so toggling GPS off later won't surface "Locating…" or a
+  // "GPS off" warning even though a location is known. Otherwise run a fresh
+  // one-shot request (fires the browser's native prompt) and give feedback:
+  // a "Locating…" state, then either the point is placed or a message explains.
   const handleUseLocation = () => {
-    if (gps) setStartPoint(gps);
+    if (gps) {
+      setGpsError(null);
+      setStartPoint(gps);
+      setLocating(false);
+      return;
+    }
     setLocating(true);
     requestCurrentPosition(
       (pos) => {
