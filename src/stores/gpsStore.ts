@@ -8,6 +8,7 @@ interface GpsState {
   watchId: number | null;
   startWatching: () => void;
   stopWatching: () => void;
+  requestCurrentPosition: (onSuccess?: (pos: LatLng) => void) => void;
   setError: (msg: string | null) => void;
 }
 
@@ -61,6 +62,33 @@ export const useGpsStore = create<GpsState>((set, get) => ({
       navigator.geolocation.clearWatch(watchId);
     }
     set({ watching: false, watchId: null });
+  },
+
+  // One-shot location request used by "Use my location". Unlike the watch
+  // (which is guarded by `watching`), this ALWAYS attempts a fresh request and
+  // fires the native permission prompt — even if a watch is already active —
+  // so clicking the button after enabling GPS works without a page refresh.
+  requestCurrentPosition: (onSuccess) => {
+    if (!('geolocation' in navigator)) {
+      set({
+        error:
+          window.isSecureContext === false
+            ? 'GPS blocked: mobile browsers need HTTPS. Open this app via https:// (or localhost).'
+            : 'Geolocation is not supported on this device/browser.',
+      });
+      return;
+    }
+    navigator.geolocation.getCurrentPosition(
+      (pos) => {
+        const p: LatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        set({ position: p, error: null });
+        onSuccess?.(p);
+      },
+      () => {
+        // Keep quiet — no error banners per product decision.
+      },
+      { enableHighAccuracy: true, timeout: 15000, maximumAge: 5000 },
+    );
   },
 
   setError: (msg) => set({ error: msg }),

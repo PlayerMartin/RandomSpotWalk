@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useAppStore } from '../../stores/appStore';
 import { useGpsStore } from '../../stores/gpsStore';
 import { RadiusInput } from '../ui/RadiusInput';
@@ -23,22 +23,15 @@ export function SetupScreen() {
   const startWalk = useAppStore((s) => s.startWalk);
 
   const gps = useGpsStore((s) => s.position);
-  const startWatching = useGpsStore((s) => s.startWatching);
-  const [requested, setRequested] = useState(false);
+  const requestCurrentPosition = useGpsStore((s) => s.requestCurrentPosition);
 
-  // Clicking "Use my location" starts the watch, which fires the browser's
-  // native location prompt (like Google Maps). Once a fix arrives, place the
-  // start point automatically — no second tap needed.
-  useEffect(() => {
-    if (requested && gps) {
-      setStartPoint(gps);
-      setRequested(false);
-    }
-  }, [requested, gps, setStartPoint]);
-
+  // "Use my location" runs a fresh one-shot request every time (fires the
+  // browser's native prompt and works even if a previous attempt is stuck), so
+  // enabling GPS then tapping the button places the start point without a
+  // page refresh. Place immediately from a cached fix, then refresh it.
   const handleUseLocation = () => {
-    setRequested(true);
-    startWatching();
+    if (gps) setStartPoint(gps);
+    requestCurrentPosition((pos) => setStartPoint(pos));
   };
 
   const [timerEnabled, setTimerEnabled] = useState(timerSeconds !== null);
