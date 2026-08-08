@@ -1,0 +1,17 @@
+name: random-spot-walk
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: random-spot-walk:latest
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    # Mount the local mkcert certs so Nginx can serve HTTPS.
+    # The ./.certs directory contains nb.tail770aef.ts.net.crt and
+    # nb.tail770aef.ts.net.key produced by mkcert (see vite.config.ts / README).
+    volumes:
+      - ./.certs:/etc/nginx/certs:ro

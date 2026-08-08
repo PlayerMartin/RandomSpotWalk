@@ -1,0 +1,20 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+
+# Logs
+*.log
+
+# Local mkcert certificates (not needed in the container build)
+.certs
+
+# Local development / editor files
+.vscode
+.idea
+.DS_Store
+
+# Docs
+docs
