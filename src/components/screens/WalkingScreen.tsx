@@ -6,6 +6,7 @@ import { useTimer } from '../../hooks/useTimer';
 import { haversineDistance, formatDistance } from '../../utils/geo';
 import { DIFFICULTY_THRESHOLDS } from '../../types';
 import type { Difficulty } from '../../types';
+import { IconAlert, IconClose, IconFlag, IconTimer } from '../ui/icons';
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
@@ -47,45 +48,53 @@ export function WalkingScreen() {
       {!gps && (
         <div className="pointer-events-auto self-center">
           {error ? (
-            <div className="max-w-xs rounded-xl bg-red-500/95 px-4 py-2 text-center text-xs font-semibold leading-relaxed text-white shadow-lg">
-              ⚠️ {error}
+            <div className="flex max-w-xs items-center gap-2 rounded-xl bg-red-100 px-4 py-2.5 text-center text-xs font-semibold leading-relaxed text-red-700 shadow-md">
+              <IconAlert size={16} className="shrink-0" />
+              {error}
             </div>
           ) : (
-            <div className="rounded-full bg-amber-500 px-4 py-2 text-sm font-semibold text-white shadow-lg">
+            <div className="flex items-center gap-2 rounded-full bg-amber-100 px-4 py-2.5 text-sm font-semibold text-amber-700 shadow-md">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-amber-500" />
               Waiting for GPS signal…
             </div>
           )}
         </div>
       )}
 
-      <div className="pointer-events-auto rounded-2xl bg-white/95 p-4 shadow-2xl backdrop-blur">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-wide text-gray-400">
+      <div className="pointer-events-auto rounded-3xl bg-bone/97 p-4 shadow-2xl backdrop-blur">
+        <div className="flex items-center justify-between gap-3">
+          <div className="min-w-0">
+            <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wide text-ink-muted">
+              <IconFlag size={13} className="text-blaze" />
               Distance to spot
             </p>
-            <p className="text-4xl font-black tabular-nums text-gray-900">
+            <p className="mt-0.5 text-4xl font-extrabold tabular-nums tracking-tight text-pine">
               {distance !== null ? formatDistance(distance) : '—'}
             </p>
-            <p className="text-xs text-gray-400">
-              Target: within {threshold}m
-            </p>
+            <p className="text-xs text-ink-muted">within {threshold}m of the blaze</p>
           </div>
 
-          <div className="text-right">
-            <div className="rounded-xl bg-gray-100 px-4 py-2">
-              <p className="text-[11px] font-bold uppercase tracking-wide text-gray-400">Time</p>
-              <p className="text-xl font-bold tabular-nums text-gray-800">
+          <div className="shrink-0 text-right">
+            <div className="rounded-xl bg-bone px-3 py-1.5">
+              <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">
+                Time
+              </p>
+              <p className="text-xl font-bold tabular-nums tracking-tight text-ink">
                 {formatTime(elapsed)}
               </p>
             </div>
             {remaining !== null && (
-              <div className="mt-1 rounded-xl bg-gray-100 px-4 py-1">
-                <p className="text-[11px] font-bold uppercase tracking-wide text-gray-400">
-                  Left
-                </p>
-                <p className={`text-lg font-bold tabular-nums ${remaining <= 60 ? 'text-red-600' : 'text-gray-800'}`}>
-                  {formatTime(remaining)}
+              <div className="mt-1 flex items-center justify-end gap-1 rounded-xl bg-bone px-3 py-1">
+                <IconTimer
+                  size={12}
+                  className={remaining <= 60 ? 'text-red-600' : 'text-ink-muted'}
+                />
+                <p className="text-lg font-bold tabular-nums tracking-tight">
+                  <span
+                    className={remaining <= 60 ? 'text-red-600' : 'text-ink'}
+                  >
+                    {formatTime(remaining)}
+                  </span>
                 </p>
               </div>
             )}
@@ -95,9 +104,10 @@ export function WalkingScreen() {
         <button
           type="button"
           onClick={cancelWalk}
-          className="mt-4 w-full rounded-xl border-2 border-red-300 bg-white px-4 py-3 text-base font-bold text-red-600 active:bg-red-50"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-bone px-4 py-3 text-base font-semibold text-ink active:bg-red-50 active:text-red-700"
         >
-          ✕ Cancel Walk
+          <IconClose size={18} />
+          Cancel walk
         </button>
       </div>
     </div>

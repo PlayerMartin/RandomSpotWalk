@@ -1,3 +1,5 @@
+import { IconTarget, IconRefresh, IconWalk } from './icons';
+
 interface ActionButtonsProps {
   hasDest: boolean;
   canStart: boolean;
@@ -19,9 +21,10 @@ export function ActionButtons({
         type="button"
         onClick={onGenerate}
         disabled={!canStart}
-        className="w-full rounded-xl bg-blue-600 px-4 py-3 text-base font-bold text-white shadow-lg transition active:bg-blue-700 disabled:opacity-40 disabled:active:bg-blue-600"
+        className="flex w-full items-center justify-center gap-2 rounded-2xl bg-blaze px-4 py-3.5 text-base font-bold text-white shadow-sm transition active:bg-blaze-deep disabled:bg-line disabled:text-ink-muted disabled:shadow-none"
       >
-        🎯 Generate Spot
+        <IconTarget size={20} />
+        Generate spot
       </button>
     );
   }
@@ -31,16 +34,18 @@ export function ActionButtons({
       <button
         type="button"
         onClick={onReroll}
-        className="flex-1 rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-base font-semibold text-gray-700 active:bg-gray-100"
+        className="flex flex-1 items-center justify-center gap-2 rounded-2xl border border-line bg-bone px-4 py-3.5 text-base font-semibold text-ink active:bg-sand"
       >
-        🔄 Re-roll
+        <IconRefresh size={19} />
+        Re-roll
       </button>
       <button
         type="button"
         onClick={onStart}
-        className="flex-1 rounded-xl bg-green-600 px-4 py-3 text-base font-bold text-white shadow-lg transition active:bg-green-700"
+        className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-pine px-4 py-3.5 text-base font-bold text-white shadow-sm transition active:bg-pine-deep"
       >
-        🚶 Start Walk
+        <IconWalk size={20} />
+        Start walk
       </button>
     </div>
   );

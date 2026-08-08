@@ -6,6 +6,7 @@ import { RadiusInput } from '../ui/RadiusInput';
 import { DifficultySelector } from '../ui/DifficultySelector';
 import { TimerToggle } from '../ui/TimerToggle';
 import { ActionButtons } from '../ui/ActionButtons';
+import { IconPin, IconAlert, IconClose, IconTarget } from '../ui/icons';
 
 export function SetupScreen() {
   const startPoint = useAppStore((s) => s.startPoint);
@@ -50,12 +51,14 @@ export function SetupScreen() {
           <button
             type="button"
             onClick={() => setStartPoint(gps)}
-            className="rounded-full bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-lg active:bg-blue-700"
+            className="flex items-center gap-2 rounded-full bg-pine px-4 py-2.5 text-sm font-semibold text-white shadow-md active:bg-pine-deep"
           >
-            📍 Use my location
+            <IconPin size={16} />
+            Use my location
           </button>
         ) : !startPoint ? (
-          <div className="rounded-full bg-white/95 px-4 py-2 text-sm font-semibold text-gray-700 shadow-lg">
+          <div className="flex items-center gap-2 rounded-full bg-bone/95 px-4 py-2.5 text-sm font-semibold text-ink shadow-md backdrop-blur">
+            <IconTarget size={16} className="text-blaze" />
             Tap the map to set your start point
           </div>
         ) : null}
@@ -63,25 +66,30 @@ export function SetupScreen() {
 
       {/* GPS error banner */}
       {gpsError && !startPoint && (
-        <div className="pointer-events-auto mx-auto max-w-xs self-center rounded-xl bg-red-500/95 px-4 py-2 text-center text-xs font-semibold leading-relaxed text-white shadow-lg">
-          ⚠️ {gpsError}
+        <div className="pointer-events-auto mx-auto flex max-w-xs items-center gap-2 self-center rounded-xl bg-red-100 px-4 py-2.5 text-xs font-semibold leading-relaxed text-red-700 shadow-md">
+          <IconAlert size={16} className="shrink-0" />
+          {gpsError}
         </div>
       )}
 
       {/* Control card */}
       {startPoint && (
-        <div className="pointer-events-auto rounded-2xl bg-white/95 p-4 shadow-2xl backdrop-blur">
-          <div className="mb-2 flex items-center justify-between">
-            <span className="text-xs font-semibold text-gray-500">Start point set</span>
+        <div className="pointer-events-auto rounded-3xl bg-bone/97 p-4 shadow-2xl backdrop-blur">
+          <div className="mb-3 flex items-center justify-between">
+            <span className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-ink-muted">
+              <span className="h-2 w-2 rounded-full bg-pine" />
+              Start point set
+            </span>
             <button
               type="button"
               onClick={clearStartPoint}
-              className="rounded-lg px-2 py-1 text-xs font-bold text-red-500 active:bg-red-50"
+              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold text-ink-muted active:bg-sand active:text-red-600"
             >
-              ✕ Cancel
+              <IconClose size={14} />
+              Clear
             </button>
           </div>
-          <div className="mb-4 space-y-3">
+          <div className="space-y-4">
             <RadiusInput value={radiusKm} onChange={setRadius} />
             <DifficultySelector value={difficulty} onChange={setDifficulty} />
             <TimerToggle
@@ -91,13 +99,15 @@ export function SetupScreen() {
               onChange={handleTimerChange}
             />
           </div>
-          <ActionButtons
-            hasDest={!!destPoint}
-            canStart={!!startPoint}
-            onGenerate={generateDest}
-            onReroll={rerollDest}
-            onStart={startWalk}
-          />
+          <div className="mt-4">
+            <ActionButtons
+              hasDest={!!destPoint}
+              canStart={!!startPoint}
+              onGenerate={generateDest}
+              onReroll={rerollDest}
+              onStart={startWalk}
+            />
+          </div>
         </div>
       )}
     </div>

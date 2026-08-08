@@ -6,6 +6,13 @@ import { useAchievements } from '../../hooks/useAchievements';
 import { AchievementToast } from '../ui/AchievementToast';
 import { DIFFICULTY_LABELS } from '../../types';
 import type { Walk } from '../../types';
+import {
+  IconFlag,
+  IconFlame,
+  IconCrown,
+  IconWalk,
+  IconHistory,
+} from '../ui/icons';
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
@@ -38,7 +45,7 @@ export function CompletionScreen() {
       : null;
 
   return (
-    <div className="absolute inset-0 z-[600] flex flex-col overflow-y-auto bg-white/95 backdrop-blur">
+    <div className="absolute inset-0 z-[600] flex flex-col overflow-y-auto bg-bone backdrop-blur">
       {/* Achievement toasts */}
       {newlyUnlocked.length > 0 && (
         <div className="pointer-events-none fixed inset-x-0 top-20 z-[700] flex flex-col items-center gap-2 px-4">
@@ -48,40 +55,69 @@ export function CompletionScreen() {
         </div>
       )}
 
-      <div className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-6 px-6 py-10 text-center">
-        <div className="text-6xl">🎉</div>
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col items-center justify-center gap-7 px-6 py-10 text-center">
+        <div className="relative flex h-20 w-20 items-center justify-center rounded-3xl bg-sand">
+          <div className="absolute inset-0 rotate-45 rounded-[20px] bg-sand" />
+          <IconFlag size={40} className="relative text-blaze" />
+        </div>
+
         <div>
-          <h1 className="text-3xl font-black text-gray-900">Walk Complete!</h1>
-          <p className="mt-1 text-sm font-semibold text-gray-500">
+          <h1 className="font-display text-3xl font-extrabold tracking-tight text-pine">
+            Spot reached
+          </h1>
+          <p className="mt-1.5 text-sm font-medium text-ink-muted">
             {DIFFICULTY_LABELS[walk.difficulty]} · {walk.radiusKm} km radius
           </p>
         </div>
 
         <div className="grid w-full grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-gray-100 p-4">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-gray-400">Elapsed</p>
-            <p className="text-3xl font-black tabular-nums text-gray-900">
+          <div className="rounded-2xl bg-sand p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">
+              Elapsed
+            </p>
+            <p className="mt-0.5 text-3xl font-extrabold tabular-nums tracking-tight text-ink">
               {formatTime(walk.elapsedSeconds)}
             </p>
           </div>
-          <div className="rounded-2xl bg-gray-100 p-4">
-            <p className="text-[11px] font-bold uppercase tracking-wide text-gray-400">
-              {remaining !== null ? 'Timer Left' : 'Best Streak'}
+          <div className="rounded-2xl bg-sand p-4">
+            <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">
+              {remaining !== null ? 'Timer left' : 'Best streak'}
             </p>
-            <p className="text-3xl font-black tabular-nums text-gray-900">
-              {remaining !== null ? formatTime(remaining) : `🔥${bestStreak}`}
+            <p className="mt-0.5 text-3xl font-extrabold tabular-nums tracking-tight text-ink">
+              {remaining !== null ? (
+                formatTime(remaining)
+              ) : (
+                <span className="inline-flex items-center gap-2">
+                  <IconCrown size={26} className="text-moss" />
+                  {bestStreak}
+                </span>
+              )}
             </p>
           </div>
         </div>
 
-        <div className="flex w-full items-center justify-center gap-8 rounded-2xl bg-amber-50 p-4 text-amber-700">
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-wide">Current streak</p>
-            <p className="text-2xl font-black">🔥 {currentStreak} day{currentStreak === 1 ? '' : 's'}</p>
+        <div className="flex w-full items-center justify-center gap-10 rounded-2xl bg-moss-soft px-4 py-4 text-pine">
+          <div className="flex items-center gap-2.5">
+            <IconFlame size={26} className="text-blaze" />
+            <div className="text-left">
+              <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">
+                Streak
+              </p>
+              <p className="text-xl font-extrabold leading-tight tabular-nums">
+                {currentStreak} day{currentStreak === 1 ? '' : 's'}
+              </p>
+            </div>
           </div>
-          <div>
-            <p className="text-[11px] font-bold uppercase tracking-wide">Best</p>
-            <p className="text-2xl font-black">👑 {bestStreak}</p>
+          <div className="flex items-center gap-2.5">
+            <IconCrown size={26} className="text-ink-muted" />
+            <div className="text-left">
+              <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">
+                Best
+              </p>
+              <p className="text-xl font-extrabold leading-tight tabular-nums">
+                {bestStreak}
+              </p>
+            </div>
           </div>
         </div>
 
@@ -89,16 +125,18 @@ export function CompletionScreen() {
           <button
             type="button"
             onClick={resetToSetup}
-            className="w-full rounded-xl bg-green-600 px-4 py-3 text-base font-bold text-white shadow-lg active:bg-green-700"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl bg-pine px-4 py-3.5 text-base font-bold text-white shadow-sm transition active:bg-pine-deep"
           >
-            🚶 Start New Walk
+            <IconWalk size={20} />
+            Start new walk
           </button>
           <button
             type="button"
             onClick={() => openPanel('history')}
-            className="w-full rounded-xl border-2 border-gray-300 bg-white px-4 py-3 text-base font-semibold text-gray-700 active:bg-gray-100"
+            className="flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-bone px-4 py-3.5 text-base font-semibold text-ink active:bg-sand"
           >
-            📜 View History
+            <IconHistory size={18} />
+            View history
           </button>
         </div>
       </div>

@@ -6,9 +6,11 @@ export function RadiusInput({
   onChange: (km: number) => void;
 }) {
   return (
-    <label className="flex items-center gap-2">
-      <span className="text-sm font-semibold text-gray-700">Radius</span>
-      <div className="relative flex-1">
+    <label className="block">
+      <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-wide text-ink-muted">
+        How far can the spot be?
+      </span>
+      <div className="relative">
         <input
           type="number"
           min={0}
@@ -18,9 +20,11 @@ export function RadiusInput({
             const v = parseFloat(e.target.value);
             onChange(Number.isFinite(v) ? v : 0);
           }}
-          className="w-full rounded-xl border-2 border-gray-200 bg-white py-2 pl-3 pr-10 text-base font-semibold text-gray-800 outline-none focus:border-blue-500"
+          className="w-full rounded-xl border border-line bg-bone py-2.5 pl-3.5 pr-12 text-lg font-bold text-ink outline-none transition focus:border-pine"
         />
-        <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-400">km</span>
+        <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-ink-muted">
+          km
+        </span>
       </div>
     </label>
   );

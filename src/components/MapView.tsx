@@ -24,8 +24,16 @@ function makeIcon(color: string, inner?: string, cls?: string) {
   });
 }
 
-const startIcon = makeIcon("#22c55e", "S", "ring");
-const destIcon = makeIcon("#ef4444", "D", "ring");
+const startIcon = makeIcon("#1b3a2a", "S", "ring");
+
+// Signature: destination as a diamond "trail blaze" with a white spot.
+const destIcon = L.divIcon({
+  className: "custom-marker",
+  html: `<div class="blaze-dot"></div>`,
+  iconSize: [22, 22],
+  iconAnchor: [11, 11],
+  popupAnchor: [0, -13],
+});
 
 const gpsIcon = L.divIcon({
   className: "custom-marker",
@@ -193,7 +201,7 @@ export function SetupOverlays({
           center={startPoint}
           radius={radiusKm * 1000}
           pathOptions={{
-            color: "#3b82f6",
+            color: "#1b3a2a",
             weight: 2,
             dashArray: "6 6",
             fillOpacity: 0.06,
@@ -209,7 +217,7 @@ export function SetupOverlays({
             center={destPoint}
             radius={DIFFICULTY_THRESHOLDS[difficulty]}
             pathOptions={{
-              color: "#ef4444",
+              color: "#e85d2f",
               weight: 2,
               dashArray: "4 4",
               fillOpacity: 0.08,
@@ -244,7 +252,7 @@ export function WalkingOverlays({
             <Circle
               center={destPoint}
               radius={DIFFICULTY_THRESHOLDS[difficulty]}
-              pathOptions={{ color: "#ef4444", weight: 2, fillOpacity: 0.08 }}
+              pathOptions={{ color: "#e85d2f", weight: 2, fillOpacity: 0.08 }}
             />
           )}
         </>
@@ -272,7 +280,7 @@ export function CompletedOverlays({
           <Circle
             center={destPoint}
             radius={DIFFICULTY_THRESHOLDS[difficulty]}
-            pathOptions={{ color: "#22c55e", weight: 2, fillOpacity: 0.1 }}
+            pathOptions={{ color: "#6f9e76", weight: 2, fillOpacity: 0.12 }}
           />
         </>
       )}
