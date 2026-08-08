@@ -56,6 +56,12 @@ export interface GamificationState {
 // ── Map Theme ──
 export type MapTheme = 'light' | 'dark';
 
+// Last map viewport, persisted so it can be restored on launch.
+export interface MapViewState {
+  center: LatLng;
+  zoom: number;
+}
+
 // ── Active (in-progress) Walk ──
 // Subset of app state needed to resume an in-progress walk after a page
 // refresh or browser restart. Persisted under `random-spot-walk-active`.

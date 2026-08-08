@@ -11,6 +11,9 @@ import { useAppStore } from "../stores/appStore";
 
 // ── Custom divIcons (avoid Leaflet's broken default image paths) ──
 const DEFAULT_LOCATION: LatLng = { lat: 48.8584, lng: 2.2945 }; // centered-ish
+// Initial viewport: whatever was last saved, else the default.
+const INITIAL_CENTER = useSettingsStore.getState().mapView?.center ?? DEFAULT_LOCATION;
+const INITIAL_ZOOM = useSettingsStore.getState().mapView?.zoom ?? 3;
 
 // Start marker: colored via CSS so it follows the current theme.
 const startIcon = L.divIcon({
@@ -50,6 +53,22 @@ function MapController({
   const map = useMap();
   const phase = useAppStore((s) => s.phase);
   const hadStartRef = useRef(false);
+  const restoredRef = useRef(false);
+
+  // Persist the viewport whenever the map moves (pan/zoom/fit).
+  useEffect(() => {
+    const onMoveEnd = () => {
+      const c = map.getCenter();
+      useSettingsStore.getState().setMapView(
+        { lat: c.lat, lng: c.lng },
+        map.getZoom(),
+      );
+    };
+    map.on("moveend", onMoveEnd);
+    return () => {
+      map.off("moveend", onMoveEnd);
+    };
+  }, [map]);
 
   useEffect(() => {
     // Extra bottom room so points aren't hidden behind the setup control card
@@ -69,10 +88,12 @@ function MapController({
       const b = circleBounds(startPoint, radiusKm * 1000);
       const bounds = L.latLngBounds([b.south, b.west], [b.north, b.east]);
       map.fitBounds(bounds, fitOptions);
-    } else if (!hadStartRef.current) {
-      // Only set the default view on first mount; when a start point is
+    } else if (!hadStartRef.current && !restoredRef.current) {
+      // Only restore the last viewport on first mount; when a start point is
       // cleared (Cancel), keep the current zoom/center instead.
-      map.setView(DEFAULT_LOCATION, 3);
+      restoredRef.current = true;
+      const saved = useSettingsStore.getState().mapView;
+      map.setView(saved?.center ?? DEFAULT_LOCATION, saved?.zoom ?? 3);
     }
   }, [startPoint, destPoint, radiusKm, map, phase]);
 
@@ -101,8 +122,8 @@ export function MapView({
   return (
     <div className="absolute inset-0 z-0">
       <MapContainer
-        center={DEFAULT_LOCATION}
-        zoom={3}
+        center={INITIAL_CENTER}
+        zoom={INITIAL_ZOOM}
         style={{ height: "100%", width: "100%" }}
         zoomControl={false}
         attributionControl={true}

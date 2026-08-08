@@ -1,4 +1,4 @@
-import type { ActiveWalk, GamificationState, MapTheme, Walk } from '../types';
+import type { ActiveWalk, GamificationState, MapTheme, MapViewState, Walk } from '../types';
 import { ACHIEVEMENT_DEFINITIONS } from './achievements';
 
 const KEYS = {
@@ -6,6 +6,7 @@ const KEYS = {
   gamification: 'random-spot-walk-gamification',
   mapTheme: 'random-spot-walk-map-style',
   active: 'random-spot-walk-active',
+  mapView: 'random-spot-walk-map-view',
 } as const;
 
 export function freshGamification(): GamificationState {
@@ -58,6 +59,45 @@ export function loadMapTheme(): MapTheme {
 export function saveMapTheme(theme: MapTheme): void {
   try {
     localStorage.setItem(KEYS.mapTheme, theme);
+  } catch {
+    // ignore
+  }
+}
+
+// ── Last map viewport ──
+// Persists so the map reopens where the user left off.
+function isValidMapView(v: unknown): v is MapViewState {
+  if (!v || typeof v !== 'object') return false;
+  const o = v as Record<string, unknown>;
+  const c = o.center as { lat?: unknown; lng?: unknown } | undefined;
+  return (
+    !!c &&
+    typeof c.lat === 'number' &&
+    typeof c.lng === 'number' &&
+    typeof o.zoom === 'number' &&
+    o.zoom >= 1 &&
+    o.zoom <= 19
+  );
+}
+
+export function loadMapView(): MapViewState | null {
+  const raw = loadRaw(KEYS.mapView);
+  if (!raw) return null;
+  const parsed = safeParse<unknown>(raw, null);
+  return isValidMapView(parsed) ? parsed : null;
+}
+
+function loadRaw(key: string): string | null {
+  try {
+    return localStorage.getItem(key);
+  } catch {
+    return null;
+  }
+}
+
+export function saveMapView(view: MapViewState): void {
+  try {
+    localStorage.setItem(KEYS.mapView, JSON.stringify(view));
   } catch {
     // ignore
   }
