@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAppStore } from '../../stores/appStore';
 import { useGpsStore } from '../../stores/gpsStore';
-import { useGeolocation } from '../../hooks/useGeolocation';
 import { RadiusInput } from '../ui/RadiusInput';
 import { DifficultySelector } from '../ui/DifficultySelector';
 import { TimerToggle } from '../ui/TimerToggle';
@@ -24,24 +23,22 @@ export function SetupScreen() {
   const startWalk = useAppStore((s) => s.startWalk);
 
   const gps = useGpsStore((s) => s.position);
+  const startWatching = useGpsStore((s) => s.startWatching);
+  const [requested, setRequested] = useState(false);
 
-  // Try to get a live location while on the setup screen
-  useGeolocation(true);
-
-  // Shown when the user taps "Use my location" but GPS isn't available yet.
-  const [gpsPrompt, setGpsPrompt] = useState(false);
-
+  // Clicking "Use my location" starts the watch, which fires the browser's
+  // native location prompt (like Google Maps). Once a fix arrives, place the
+  // start point automatically — no second tap needed.
   useEffect(() => {
-    if (gps) setGpsPrompt(false);
-  }, [gps]);
+    if (requested && gps) {
+      setStartPoint(gps);
+      setRequested(false);
+    }
+  }, [requested, gps, setStartPoint]);
 
   const handleUseLocation = () => {
-    if (gps) {
-      setStartPoint(gps);
-      setGpsPrompt(false);
-    } else {
-      setGpsPrompt(true);
-    }
+    setRequested(true);
+    startWatching();
   };
 
   const [timerEnabled, setTimerEnabled] = useState(timerSeconds !== null);
@@ -107,12 +104,6 @@ export function SetupScreen() {
             <IconTarget size={14} className="text-blaze" />
             or tap the map to set your start point
           </div>
-          {gpsPrompt && (
-            <div className="flex max-w-xs items-center gap-2 rounded-xl bg-warn-bg px-4 py-2.5 text-center text-xs font-semibold leading-relaxed text-warn-text shadow-md">
-              <IconPin size={16} className="shrink-0" />
-              Turn on your GPS and try again.
-            </div>
-          )}
         </div>
       )}
 
