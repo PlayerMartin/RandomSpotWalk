@@ -11,7 +11,7 @@ import { CompletionScreen } from './components/screens/CompletionScreen';
 import { MapThemeToggle } from './components/MapThemeToggle';
 import { WalkHistoryPanel } from './components/panels/WalkHistoryPanel';
 import { GamificationPanel } from './components/panels/GamificationPanel';
-import { IconTrophy, IconHistory } from './components/ui/icons';
+import { IconTrophy, IconHistory, IconBug } from './components/ui/icons';
 
 /* Diamond trail-blaze mark + a "spot" */
 function Logo() {
@@ -48,6 +48,31 @@ function IconButton({
     >
       {children}
     </button>
+  );
+}
+
+/* External link that opens in a new tab, styled like an icon button. */
+function IconLink({
+  label,
+  href,
+  children,
+}: {
+  label: string;
+  href: string;
+  children: ReactNode;
+}) {
+  return (
+    <a
+      href={href}
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label={label}
+      title={label}
+      className="flex h-11 w-11 items-center justify-center rounded-full bg-bone/90 text-ink-muted backdrop-blur transition active:bg-sand active:text-pine"
+      style={{ boxShadow: '0 1px 0 rgba(30,40,38,0.06), 0 8px 20px rgba(30,40,38,0.10)' }}
+    >
+      {children}
+    </a>
   );
 }
 
@@ -113,6 +138,12 @@ export default function App() {
           <Logo />
         </div>
         <div className="flex gap-2">
+          <IconLink
+            label="Report an issue"
+            href="https://github.com/PlayerMartin/RandomSpotWalk/issues"
+          >
+            <IconBug size={20} />
+          </IconLink>
           <IconButton label="Achievements" onClick={() => openPanel('gamification')}>
             <IconTrophy size={20} />
           </IconButton>
