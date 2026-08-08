@@ -12,19 +12,14 @@ import { useAppStore } from "../stores/appStore";
 // ── Custom divIcons (avoid Leaflet's broken default image paths) ──
 const DEFAULT_LOCATION: LatLng = { lat: 48.8584, lng: 2.2945 }; // centered-ish
 
-function makeIcon(color: string, inner?: string, cls?: string) {
-  return L.divIcon({
-    className: "custom-marker",
-    html: `<div class="marker-dot" style="background:${color}">${
-      inner ? `<span>${inner}</span>` : ""
-    }${cls ? `<span class="dot-ring" style="border-color:${color}"></span>` : ""}</div>`,
-    iconSize: [24, 24],
-    iconAnchor: [12, 12],
-    popupAnchor: [0, -14],
-  });
-}
-
-const startIcon = makeIcon("#1b3a2a", "S", "ring");
+// Start marker: colored via CSS so it follows the current theme.
+const startIcon = L.divIcon({
+  className: "custom-marker",
+  html: `<div class="marker-dot marker-start"><span>S</span><span class="dot-ring"></span></div>`,
+  iconSize: [24, 24],
+  iconAnchor: [12, 12],
+  popupAnchor: [0, -14],
+});
 
 // Signature: destination as a diamond "trail blaze" with a white spot.
 const destIcon = L.divIcon({

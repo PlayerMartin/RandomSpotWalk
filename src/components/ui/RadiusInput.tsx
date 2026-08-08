@@ -35,7 +35,7 @@ export function RadiusInput({
           aria-invalid={invalid || undefined}
           className={`w-full rounded-xl border bg-bone py-2.5 pl-3.5 pr-12 text-lg font-bold text-ink outline-none transition ${
             invalid
-              ? 'border-red-400 focus:border-red-500'
+              ? 'border-danger-border focus:border-danger-border'
               : 'border-line focus:border-pine'
           }`}
         />
@@ -44,7 +44,7 @@ export function RadiusInput({
         </span>
       </div>
       {invalid && (
-        <span className="mt-1.5 block text-xs font-semibold text-red-600">
+        <span className="mt-1.5 block text-xs font-semibold text-danger-text">
           {error}
         </span>
       )}

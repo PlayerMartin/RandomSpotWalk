@@ -130,7 +130,7 @@ export function WalkHistoryPanel() {
               <button
                 type="button"
                 onClick={() => setConfirming(true)}
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-blaze/40 px-4 py-2.5 text-sm font-semibold text-blaze-deep active:bg-red-50"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-blaze/40 px-4 py-2.5 text-sm font-semibold text-blaze-deep active:bg-danger-bg"
               >
                 <IconTrash size={16} />
                 Clear history

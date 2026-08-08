@@ -98,7 +98,7 @@ export function SetupScreen() {
 
       {/* GPS error banner */}
       {gpsError && !startPoint && (
-        <div className="pointer-events-auto mx-auto flex max-w-xs items-center gap-2 self-center rounded-xl bg-red-100 px-4 py-2.5 text-xs font-semibold leading-relaxed text-red-700 shadow-md">
+        <div className="pointer-events-auto mx-auto flex max-w-xs items-center gap-2 self-center rounded-xl bg-danger-bg px-4 py-2.5 text-xs font-semibold leading-relaxed text-danger-text shadow-md">
           <IconAlert size={16} className="shrink-0" />
           {gpsError}
         </div>
@@ -115,7 +115,7 @@ export function SetupScreen() {
             <button
               type="button"
               onClick={clearStartPoint}
-              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold text-ink-muted active:bg-sand active:text-red-600"
+              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs font-bold text-ink-muted active:bg-sand active:text-danger-text"
             >
               <IconClose size={14} />
               Clear

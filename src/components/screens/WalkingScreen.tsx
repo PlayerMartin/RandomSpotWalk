@@ -48,13 +48,13 @@ export function WalkingScreen() {
       {!gps && (
         <div className="pointer-events-auto self-center">
           {error ? (
-            <div className="flex max-w-xs items-center gap-2 rounded-xl bg-red-100 px-4 py-2.5 text-center text-xs font-semibold leading-relaxed text-red-700 shadow-md">
+            <div className="flex max-w-xs items-center gap-2 rounded-xl bg-danger-bg px-4 py-2.5 text-center text-xs font-semibold leading-relaxed text-danger-text shadow-md">
               <IconAlert size={16} className="shrink-0" />
               {error}
             </div>
           ) : (
-            <div className="flex items-center gap-2 rounded-full bg-amber-100 px-4 py-2.5 text-sm font-semibold text-amber-700 shadow-md">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-amber-500" />
+            <div className="flex items-center gap-2 rounded-full bg-warn-bg px-4 py-2.5 text-sm font-semibold text-warn-text shadow-md">
+              <span className="h-2 w-2 animate-pulse rounded-full bg-warn-dot" />
               Waiting for GPS signal…
             </div>
           )}
@@ -87,11 +87,11 @@ export function WalkingScreen() {
               <div className="mt-1 flex items-center justify-end gap-1 rounded-xl bg-bone px-3 py-1">
                 <IconTimer
                   size={12}
-                  className={remaining <= 60 ? 'text-red-600' : 'text-ink-muted'}
+                  className={remaining <= 60 ? 'text-danger-text' : 'text-ink-muted'}
                 />
                 <p className="text-lg font-bold tabular-nums tracking-tight">
                   <span
-                    className={remaining <= 60 ? 'text-red-600' : 'text-ink'}
+                    className={remaining <= 60 ? 'text-danger-text' : 'text-ink'}
                   >
                     {formatTime(remaining)}
                   </span>
@@ -104,7 +104,7 @@ export function WalkingScreen() {
         <button
           type="button"
           onClick={cancelWalk}
-          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-bone px-4 py-3 text-base font-semibold text-ink active:bg-red-50 active:text-red-700"
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-bone px-4 py-3 text-base font-semibold text-ink active:bg-danger-bg active:text-danger-text"
         >
           <IconClose size={18} />
           Cancel walk

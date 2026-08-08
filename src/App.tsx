@@ -61,6 +61,7 @@ export default function App() {
 
   const panel = useUiStore((s) => s.panel);
   const openPanel = useUiStore((s) => s.openPanel);
+  const mapTheme = useSettingsStore((s) => s.mapTheme);
 
   // Hydrate persisted stores on mount
   useEffect(() => {
@@ -71,7 +72,9 @@ export default function App() {
 
   return (
     <div
-      className="relative w-full overflow-hidden bg-bone"
+      className={`relative w-full overflow-hidden bg-bone ${
+        mapTheme === 'dark' ? 'theme-dark' : ''
+      }`}
       style={{ position: 'fixed', inset: 0, height: '100dvh' }}
     >
       <MapView

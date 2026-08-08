@@ -17,9 +17,49 @@
   --color-live: #1f9e8a;        /* "you are here" GPS teal */
   --color-line: #ddd4c2;        /* hairline on bone */
 
+  /* Semantic alert colors (theme-aware, see .theme-dark below) */
+  --color-danger-bg: #fee2e2;
+  --color-danger-text: #b91c1c;
+  --color-danger-border: #f87171;
+  --color-warn-bg: #fef3c7;
+  --color-warn-text: #92400e;
+  --color-warn-dot: #f59e0b;
+
   /* Type */
   --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
+}
+
+/* ── Dark theme · trail marker at night ─────────────────────── */
+/* Re-defining the token variables inside `.theme-dark` flips every
+   utility that references them (bg-bone, text-ink, border-line, ...),
+   so the whole UI adapts when the map is switched to dark. */
+.theme-dark {
+  --color-pine: #2f5c46;
+  --color-pine-deep: #244a37;
+  --color-blaze: #f0774b;
+  --color-blaze-deep: #ef8a63;
+  --color-bone: #141b17;
+  --color-sand: #1c2620;
+  --color-ink: #ece7dc;
+  --color-ink-muted: #96a49a;
+  --color-moss: #9dbfa0;
+  --color-moss-soft: #1e2b24;
+  --color-live: #35b7a1;
+  --color-line: #2b3931;
+
+  --color-danger-bg: #3a1d1d;
+  --color-danger-text: #f0a49a;
+  --color-danger-border: #a24a42;
+  --color-warn-bg: #332a16;
+  --color-warn-text: #f0c674;
+  --color-warn-dot: #e8b04b;
+}
+
+/* Match Leaflet attribution to the current theme */
+.theme-dark .leaflet-container .leaflet-control-attribution {
+  background: rgba(20, 27, 23, 0.75);
+  color: #96a49a;
 }
 
 @layer base {
@@ -93,6 +133,13 @@
   border-radius: 9999px;
   border: 2px solid;
   opacity: 0.7;
+}
+/* Start marker follows the pine token so it stays visible on both themes */
+.marker-start {
+  background: var(--color-pine);
+}
+.marker-start .dot-ring {
+  border-color: var(--color-pine);
 }
 
 /* Signature: destination as a diamond "trail blaze" with a spot */
