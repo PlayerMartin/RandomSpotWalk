@@ -29,17 +29,15 @@ if (hasCerts) {
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/random-spot-walk/',
   plugins: [react(), tailwindcss()],
   server: {
-    // HTTPS only. `host: '0.0.0.0'` lets you reach it from your phone on the
-    // same Wi-Fi via https://<LAN-IP>:5173 (needed for mobile GPS).
     https,
     host: '0.0.0.0',
     strictPort: true,
     allowedHosts: true
   },
   preview: {
-    // Make `npm run preview` HTTPS-only too.
     https,
   },
 })
