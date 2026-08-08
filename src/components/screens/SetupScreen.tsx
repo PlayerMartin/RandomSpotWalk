@@ -34,6 +34,38 @@ export function SetupScreen() {
     timerSeconds !== null ? Math.max(1, Math.round(timerSeconds / 60)) : 15,
   );
 
+  // Radius is typed as text so it can be cleared while editing; it is only
+  // validated on submit. We keep the store in sync whenever it's a valid
+  // number so the map/radius effects still update live.
+  const [radiusDraft, setRadiusDraft] = useState<string>(() => String(radiusKm));
+  const [radiusError, setRadiusError] = useState<string | null>(null);
+
+  const handleRadiusText = (text: string) => {
+    setRadiusDraft(text);
+    const v = parseFloat(text);
+    if (Number.isFinite(v)) setRadius(v);
+    if (text.trim() !== '') setRadiusError(null);
+  };
+
+  const validateRadius = (): boolean => {
+    const v = parseFloat(radiusDraft);
+    if (radiusDraft.trim() === '' || !Number.isFinite(v) || v <= 0) {
+      setRadiusError('Select a valid radius in km');
+      return false;
+    }
+    setRadiusError(null);
+    return true;
+  };
+
+  const handleGenerate = () => {
+    if (!validateRadius()) return;
+    generateDest();
+  };
+  const handleStart = () => {
+    if (!validateRadius()) return;
+    startWalk();
+  };
+
   const handleToggleTimer = (enabled: boolean) => {
     setTimerEnabled(enabled);
     setTimer(enabled ? timerMinutes * 60 : null);
@@ -90,7 +122,7 @@ export function SetupScreen() {
             </button>
           </div>
           <div className="space-y-4">
-            <RadiusInput value={radiusKm} onChange={setRadius} />
+            <RadiusInput value={radiusDraft} onChange={handleRadiusText} error={radiusError} />
             <DifficultySelector value={difficulty} onChange={setDifficulty} />
             <TimerToggle
               enabled={timerEnabled}
@@ -103,9 +135,9 @@ export function SetupScreen() {
             <ActionButtons
               hasDest={!!destPoint}
               canStart={!!startPoint}
-              onGenerate={generateDest}
+              onGenerate={handleGenerate}
               onReroll={rerollDest}
-              onStart={startWalk}
+              onStart={handleStart}
             />
           </div>
         </div>

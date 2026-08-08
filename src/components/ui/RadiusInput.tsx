@@ -1,10 +1,13 @@
 export function RadiusInput({
   value,
   onChange,
+  error,
 }: {
-  value: number;
-  onChange: (km: number) => void;
+  value: string;
+  onChange: (text: string) => void;
+  error?: string | null;
 }) {
+  const invalid = !!error;
   return (
     <label className="block">
       <span className="mb-1.5 block text-[11px] font-bold uppercase tracking-wide text-ink-muted">
@@ -12,20 +15,39 @@ export function RadiusInput({
       </span>
       <div className="relative">
         <input
-          type="number"
-          min={0}
-          step="0.1"
+          type="text"
+          inputMode="decimal"
+          autoComplete="off"
+          spellCheck={false}
           value={value}
           onChange={(e) => {
-            const v = parseFloat(e.target.value);
-            onChange(Number.isFinite(v) ? v : 0);
+            // Digits plus a single decimal point; a trailing/blank value is
+            // allowed while typing (validation happens on submit instead).
+            let cleaned = e.target.value.replace(/[^0-9.]/g, '');
+            const firstDot = cleaned.indexOf('.');
+            if (firstDot !== -1) {
+              cleaned =
+                cleaned.slice(0, firstDot + 1) +
+                cleaned.slice(firstDot + 1).replace(/\./g, '');
+            }
+            onChange(cleaned);
           }}
-          className="w-full rounded-xl border border-line bg-bone py-2.5 pl-3.5 pr-12 text-lg font-bold text-ink outline-none transition focus:border-pine"
+          aria-invalid={invalid || undefined}
+          className={`w-full rounded-xl border bg-bone py-2.5 pl-3.5 pr-12 text-lg font-bold text-ink outline-none transition ${
+            invalid
+              ? 'border-red-400 focus:border-red-500'
+              : 'border-line focus:border-pine'
+          }`}
         />
         <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-ink-muted">
           km
         </span>
       </div>
+      {invalid && (
+        <span className="mt-1.5 block text-xs font-semibold text-red-600">
+          {error}
+        </span>
+      )}
     </label>
   );
 }
