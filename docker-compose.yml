@@ -11,7 +11,7 @@ services:
       - "80:80"
       - "443:443"
     # Mount the local mkcert certs so Nginx can serve HTTPS.
-    # The ./.certs directory contains nb.tail770aef.ts.net.crt and
-    # nb.tail770aef.ts.net.key produced by mkcert (see vite.config.ts / README).
+    # The ./.certs directory contains cert.pem and key.pem produced by
+    # mkcert (see vite.config.ts / README).
     volumes:
       - ./.certs:/etc/nginx/certs:ro

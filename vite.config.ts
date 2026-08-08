@@ -9,8 +9,8 @@ import path from 'node:path'
 // but must NOT block `vite build` inside a Docker container where .certs/
 // isn't present. Only load them when they exist (or when serving, not building).
 const certPath = path.resolve(process.cwd(), '.certs')
-const certKey = path.join(certPath, 'nb.tail770aef.ts.net.key')
-const certFile = path.join(certPath, 'nb.tail770aef.ts.net.crt')
+const certKey = path.join(certPath, 'key.pem')
+const certFile = path.join(certPath, 'cert.pem')
 const hasCerts = fs.existsSync(certKey) && fs.existsSync(certFile)
 
 let https: { key: Buffer; cert: Buffer } | undefined
@@ -22,7 +22,7 @@ if (hasCerts) {
 } else if (process.env.NODE_ENV !== 'production') {
   // Running dev/preview but the certs are missing -> fail fast, HTTPS-only.
   throw new Error(
-    'HTTPS certificates not found in .certs/ (nb.tail770aef.ts.net.crt + nb.tail770aef.ts.net.key). ' +
+    'HTTPS certificates not found in .certs/ (cert.pem + key.pem). ' +
       'Generate them with mkcert (see README) or run a production build.'
   )
 }
