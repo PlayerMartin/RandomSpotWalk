@@ -23,15 +23,24 @@ export function SetupScreen() {
   const startWalk = useAppStore((s) => s.startWalk);
 
   const gps = useGpsStore((s) => s.position);
+  const gpsError = useGpsStore((s) => s.error);
   const requestCurrentPosition = useGpsStore((s) => s.requestCurrentPosition);
+  const [locating, setLocating] = useState(false);
 
-  // "Use my location" runs a fresh one-shot request every time (fires the
-  // browser's native prompt and works even if a previous attempt is stuck), so
-  // enabling GPS then tapping the button places the start point without a
-  // page refresh. Place immediately from a cached fix, then refresh it.
+  // "Use my location" runs a fresh one-shot request every time, so enabling
+  // GPS then tapping the button works without a page refresh. It always gives
+  // feedback: a "Locating…" state while waiting, then either the start point
+  // is placed or a specific message explains why location couldn't be found.
   const handleUseLocation = () => {
     if (gps) setStartPoint(gps);
-    requestCurrentPosition((pos) => setStartPoint(pos));
+    setLocating(true);
+    requestCurrentPosition(
+      (pos) => {
+        setStartPoint(pos);
+        setLocating(false);
+      },
+      () => setLocating(false),
+    );
   };
 
   const [timerEnabled, setTimerEnabled] = useState(timerSeconds !== null);
@@ -97,6 +106,24 @@ export function SetupScreen() {
             <IconTarget size={14} className="text-blaze" />
             or tap the map to set your start point
           </div>
+          {/* Progress & location feedback — the button never silently does nothing */}
+          {(locating || gpsError) && (
+            <div
+              className={`flex max-w-xs items-center gap-2 rounded-xl px-4 py-2.5 text-center text-xs font-semibold leading-relaxed shadow-md ${
+                locating ? 'bg-warn-bg text-warn-text' : 'bg-danger-bg text-danger-text'
+              }`}
+              role="status"
+            >
+              {locating ? (
+                <>
+                  <span className="h-2 w-2 shrink-0 animate-pulse rounded-full bg-warn-dot" />
+                  Locating your position…
+                </>
+              ) : (
+                gpsError
+              )}
+            </div>
+          )}
         </div>
       )}
 
