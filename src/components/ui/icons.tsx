@@ -86,16 +86,6 @@ export function IconPin({ size, className }: IconProps) {
   );
 }
 
-/** Alert triangle */
-export function IconAlert({ size, className }: IconProps) {
-  return (
-    <Svg size={size} className={className}>
-      <path d="M12 3.5 2.6 19.6h18.8L12 3.5Z" />
-      <path d="M12 9.8v3.9M12 16.9v.1" />
-    </Svg>
-  );
-}
-
 /** Close — ✕ */
 export function IconClose({ size, className }: IconProps) {
   return (

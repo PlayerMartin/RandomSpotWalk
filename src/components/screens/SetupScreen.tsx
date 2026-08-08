@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useAppStore } from '../../stores/appStore';
 import { useGpsStore } from '../../stores/gpsStore';
 import { useGeolocation } from '../../hooks/useGeolocation';
@@ -6,7 +6,7 @@ import { RadiusInput } from '../ui/RadiusInput';
 import { DifficultySelector } from '../ui/DifficultySelector';
 import { TimerToggle } from '../ui/TimerToggle';
 import { ActionButtons } from '../ui/ActionButtons';
-import { IconPin, IconAlert, IconClose, IconTarget } from '../ui/icons';
+import { IconPin, IconClose, IconTarget } from '../ui/icons';
 
 export function SetupScreen() {
   const startPoint = useAppStore((s) => s.startPoint);
@@ -24,10 +24,25 @@ export function SetupScreen() {
   const startWalk = useAppStore((s) => s.startWalk);
 
   const gps = useGpsStore((s) => s.position);
-  const gpsError = useGpsStore((s) => s.error);
 
   // Try to get a live location while on the setup screen
   useGeolocation(true);
+
+  // Shown when the user taps "Use my location" but GPS isn't available yet.
+  const [gpsPrompt, setGpsPrompt] = useState(false);
+
+  useEffect(() => {
+    if (gps) setGpsPrompt(false);
+  }, [gps]);
+
+  const handleUseLocation = () => {
+    if (gps) {
+      setStartPoint(gps);
+      setGpsPrompt(false);
+    } else {
+      setGpsPrompt(true);
+    }
+  };
 
   const [timerEnabled, setTimerEnabled] = useState(timerSeconds !== null);
   const [timerMinutes, setTimerMinutes] = useState(
@@ -78,29 +93,26 @@ export function SetupScreen() {
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[500] flex flex-col items-stretch gap-3 px-3 pb-4">
       {/* Start point prompt / use-my-location */}
-      <div className="pointer-events-auto self-center">
-        {!startPoint && gps ? (
+      {!startPoint && (
+        <div className="pointer-events-auto flex flex-col items-center gap-2 self-center">
           <button
             type="button"
-            onClick={() => setStartPoint(gps)}
+            onClick={handleUseLocation}
             className="flex items-center gap-2 rounded-full bg-pine px-4 py-2.5 text-sm font-semibold text-white shadow-md active:bg-pine-deep"
           >
             <IconPin size={16} />
             Use my location
           </button>
-        ) : !startPoint ? (
-          <div className="flex items-center gap-2 rounded-full bg-bone/95 px-4 py-2.5 text-sm font-semibold text-ink shadow-md backdrop-blur">
-            <IconTarget size={16} className="text-blaze" />
-            Tap the map to set your start point
+          <div className="flex items-center gap-2 rounded-full bg-bone/95 px-4 py-2 text-xs font-semibold text-ink shadow-md backdrop-blur">
+            <IconTarget size={14} className="text-blaze" />
+            or tap the map to set your start point
           </div>
-        ) : null}
-      </div>
-
-      {/* GPS error banner */}
-      {gpsError && !startPoint && (
-        <div className="pointer-events-auto mx-auto flex max-w-xs items-center gap-2 self-center rounded-xl bg-danger-bg px-4 py-2.5 text-xs font-semibold leading-relaxed text-danger-text shadow-md">
-          <IconAlert size={16} className="shrink-0" />
-          {gpsError}
+          {gpsPrompt && (
+            <div className="flex max-w-xs items-center gap-2 rounded-xl bg-warn-bg px-4 py-2.5 text-center text-xs font-semibold leading-relaxed text-warn-text shadow-md">
+              <IconPin size={16} className="shrink-0" />
+              Turn on your GPS and try again.
+            </div>
+          )}
         </div>
       )}
 

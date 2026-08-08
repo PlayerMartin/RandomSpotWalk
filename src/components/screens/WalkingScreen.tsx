@@ -6,7 +6,7 @@ import { useTimer } from '../../hooks/useTimer';
 import { haversineDistance, formatDistance } from '../../utils/geo';
 import { DIFFICULTY_THRESHOLDS } from '../../types';
 import type { Difficulty } from '../../types';
-import { IconAlert, IconClose, IconFlag, IconTimer } from '../ui/icons';
+import { IconClose, IconFlag, IconTimer } from '../ui/icons';
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
@@ -23,7 +23,6 @@ export function WalkingScreen() {
   const cancelWalk = useAppStore((s) => s.cancelWalk);
 
   const gps = useGpsStore((s) => s.position);
-  const error = useGpsStore((s) => s.error);
   useGeolocation(true);
 
   const { elapsed, remaining, isExpired } = useTimer(startedAt, timerSeconds);
@@ -44,20 +43,11 @@ export function WalkingScreen() {
 
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-0 z-[500] flex flex-col gap-3 px-3 pb-4">
-      {/* GPS status */}
+      {/* Waiting for GPS (no error warnings) */}
       {!gps && (
-        <div className="pointer-events-auto self-center">
-          {error ? (
-            <div className="flex max-w-xs items-center gap-2 rounded-xl bg-danger-bg px-4 py-2.5 text-center text-xs font-semibold leading-relaxed text-danger-text shadow-md">
-              <IconAlert size={16} className="shrink-0" />
-              {error}
-            </div>
-          ) : (
-            <div className="flex items-center gap-2 rounded-full bg-warn-bg px-4 py-2.5 text-sm font-semibold text-warn-text shadow-md">
-              <span className="h-2 w-2 animate-pulse rounded-full bg-warn-dot" />
-              Waiting for GPS signal…
-            </div>
-          )}
+        <div className="pointer-events-auto flex items-center gap-2 self-center rounded-full bg-warn-bg px-4 py-2.5 text-sm font-semibold text-warn-text shadow-md">
+          <span className="h-2 w-2 animate-pulse rounded-full bg-warn-dot" />
+          Waiting for GPS signal…
         </div>
       )}
 
