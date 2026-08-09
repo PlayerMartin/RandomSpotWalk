@@ -1,0 +1,17 @@
+<svg width="150" height="150" viewBox="0 0 150 150" xmlns="http://www.w3.org/2000/svg">
+  <!-- paper tile so the constellation stays visible on light & dark tabs -->
+  <rect width="150" height="150" rx="16" fill="#f6f5f1"/>
+  <rect x="1" y="1" width="148" height="148" rx="15" fill="none" stroke="#e2dfd5" stroke-width="2"/>
+  <!-- the roof lines -->
+  <g stroke="#1b3a2a" stroke-width="8" stroke-linecap="round" fill="none">
+    <line x1="32" y1="42"  x2="84" y2="74"/>
+    <line x1="84" y1="74"  x2="52" y2="129"/>
+    <line x1="84" y1="74"  x2="131" y2="46"/>
+  </g>
+  <!-- satellites -->
+  <circle cx="32" cy="42" r="13" fill="#1b3a2a"/>
+  <circle cx="52" cy="129" r="13" fill="#1b3a2a"/>
+  <circle cx="131" cy="46" r="13" fill="#1b3a2a"/>
+  <!-- the hub -->
+  <circle cx="84" cy="74" r="18" fill="#e85d2f"/>
+</svg>
