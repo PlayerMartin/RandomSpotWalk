@@ -1,4 +1,4 @@
-import type { ActiveWalk, GamificationState, MapTheme, MapViewState, Walk } from '../types';
+import type { ActiveWalk, GamificationState, LatLng, MapTheme, MapViewState, SetupState, Walk } from '../types';
 import { ACHIEVEMENT_DEFINITIONS } from './achievements';
 
 const KEYS = {
@@ -7,6 +7,7 @@ const KEYS = {
   mapTheme: 'random-spot-walk-map-style',
   active: 'random-spot-walk-active',
   mapView: 'random-spot-walk-map-view',
+  setup: 'random-spot-walk-setup',
 } as const;
 
 export function freshGamification(): GamificationState {
@@ -148,6 +149,57 @@ export function saveActiveWalk(walk: ActiveWalk): void {
 export function clearActiveWalk(): void {
   try {
     localStorage.removeItem(KEYS.active);
+  } catch {
+    // ignore
+  }
+}
+
+// ── Setup draft config ──
+// Persists the setup screen's state so a refresh/restart mid-setup keeps the
+// user's work. Written on every setup change; read at app start (when there's
+// no in-progress walk); cleared when a walk starts.
+
+function isValidLatLngOrNull(v: unknown): v is LatLng | null {
+  if (v === null) return true;
+  const p = v as { lat?: unknown; lng?: unknown } | undefined;
+  return !!p && typeof p.lat === 'number' && typeof p.lng === 'number';
+}
+
+// Structural guard so a corrupt/partial payload can't resurrect a broken config.
+function isValidSetupState(v: unknown): v is SetupState {
+  if (!v || typeof v !== 'object') return false;
+  const o = v as Record<string, unknown>;
+  return (
+    isValidLatLngOrNull(o.startPoint) &&
+    isValidLatLngOrNull(o.destPoint) &&
+    typeof o.radiusKm === 'number' &&
+    (o.difficulty === 'easy' || o.difficulty === 'medium' || o.difficulty === 'hard') &&
+    (o.timerSeconds === null || typeof o.timerSeconds === 'number')
+  );
+}
+
+export function loadSetup(): SetupState | null {
+  const raw = loadRaw(KEYS.setup);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    return isValidSetupState(parsed) ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+export function saveSetup(state: SetupState): void {
+  try {
+    localStorage.setItem(KEYS.setup, JSON.stringify(state));
+  } catch {
+    // localStorage quota exceeded — setup draft stays in memory only
+  }
+}
+
+export function clearSetup(): void {
+  try {
+    localStorage.removeItem(KEYS.setup);
   } catch {
     // ignore
   }

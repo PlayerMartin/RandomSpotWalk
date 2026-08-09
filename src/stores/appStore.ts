@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { Achievement, AppPhase, Difficulty, LatLng, Walk } from '../types';
 import { DIFFICULTY_THRESHOLDS } from '../types';
 import { randomPointInCircle } from '../utils/geo';
-import { clearActiveWalk, loadActiveWalk, saveActiveWalk } from '../utils/storage';
+import { clearActiveWalk, clearSetup, loadActiveWalk, loadSetup, saveActiveWalk, saveSetup } from '../utils/storage';
 import { useHistoryStore } from './historyStore';
 import { useGamificationStore } from './gamificationStore';
 
@@ -46,14 +46,18 @@ export const useAppStore = create<AppState>((set, get) => {
   // refresh / browser restart resumes straight into the walking screen
   // (no flash of the setup screen, and GPS/timer pick up where they left off).
   const active = loadActiveWalk();
+  // When there's no in-progress walk, restore the setup draft so a refresh
+  // mid-setup keeps the user's config (start point, dest, radius, difficulty,
+  // countdown) intact.
+  const draft = !active ? loadSetup() : null;
 
   return {
     phase: active ? 'walking' : 'setup',
-    startPoint: active ? active.startPoint : null,
-    destPoint: active ? active.destPoint : null,
-    radiusKm: active ? active.radiusKm : 1,
-    difficulty: active ? active.difficulty : 'easy',
-    timerSeconds: active ? active.timerSeconds : null,
+    startPoint: active ? active.startPoint : draft?.startPoint ?? null,
+    destPoint: active ? active.destPoint : draft?.destPoint ?? null,
+    radiusKm: active ? active.radiusKm : draft?.radiusKm ?? 1,
+    difficulty: active ? active.difficulty : draft?.difficulty ?? 'easy',
+    timerSeconds: active ? active.timerSeconds : draft?.timerSeconds ?? null,
     startedAt: active ? active.startedAt : null,
     completedWalk: null,
     newlyUnlocked: [],
@@ -85,6 +89,10 @@ export const useAppStore = create<AppState>((set, get) => {
       if (!startPoint || !destPoint) return;
       const startedAt = new Date().toISOString();
       set({ phase: 'walking', startedAt });
+
+      // The setup draft has been consumed — drop it so we don't resurrect
+      // stale config when the walk finishes and returns to setup.
+      clearSetup();
 
       // Persist so a refresh/restart can resume this walk.
       saveActiveWalk({
@@ -160,4 +168,19 @@ export const useAppStore = create<AppState>((set, get) => {
       });
     },
   };
+});
+
+// Persist the setup draft whenever the setup screen changes, so a page
+// refresh / browser restart mid-setup keeps the user's config (start point,
+// generated destination, radius, difficulty, countdown) intact. Skipped outside
+// the setup phase — an in-progress walk is covered by the active-walk record.
+useAppStore.subscribe((state) => {
+  if (state.phase !== 'setup') return;
+  saveSetup({
+    startPoint: state.startPoint,
+    destPoint: state.destPoint,
+    radiusKm: state.radiusKm,
+    difficulty: state.difficulty,
+    timerSeconds: state.timerSeconds,
+  });
 });

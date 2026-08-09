@@ -75,3 +75,16 @@ export interface ActiveWalk {
   timerSeconds: number | null;
   startedAt: string; // ISO timestamp
 }
+
+// ── Setup draft config ──
+// The in-progress setup screen's state, persisted every time it changes so a
+// page refresh / browser restart mid-setup keeps the user's work (start point,
+// generated destination, radius, difficulty, countdown). It's cleared once a
+// walk actually starts — the `ActiveWalk` record takes over from there.
+export interface SetupState {
+  startPoint: LatLng | null;
+  destPoint: LatLng | null;
+  radiusKm: number;
+  difficulty: Difficulty;
+  timerSeconds: number | null;
+}

@@ -8,6 +8,7 @@ interface GpsState {
   watchId: number | null;
   startWatching: () => void;
   stopWatching: () => void;
+  restartWatching: () => void;
   requestCurrentPosition: (
     onSuccess?: (pos: LatLng) => void,
     onError?: (err: GeolocationPositionError | null) => void,
@@ -65,6 +66,22 @@ export const useGpsStore = create<GpsState>((set, get) => ({
       navigator.geolocation.clearWatch(watchId);
     }
     set({ watching: false, watchId: null });
+  },
+
+  // Re-establish GPS after the page returns to the foreground (phone unlock /
+  // tab re-focus). Mobile browsers suspend geolocation callbacks while the tab
+  // is hidden, and a suspended watch can come back without delivering a fresh
+  // fix. We clear the old watch, seed a current position immediately via a
+  // one-shot request, then re-register the watch — so the location isn't stuck
+  // on the pre-sleep value.
+  restartWatching: () => {
+    const { watchId, watching } = get();
+    if (watching && watchId !== null && 'geolocation' in navigator) {
+      navigator.geolocation.clearWatch(watchId);
+    }
+    set({ watching: false, watchId: null });
+    get().requestCurrentPosition();
+    get().startWatching();
   },
 
   // One-shot location request used by "Use my location". Unlike the watch

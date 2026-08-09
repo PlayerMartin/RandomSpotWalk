@@ -146,6 +146,7 @@ export function MapView({
         <MapClickCapture onMapClick={onMapClick} />
         <ControllerBridge />
         <MapInitFix />
+        <MapVisibilityFix />
         {children}
       </MapContainer>
     </div>
@@ -158,6 +159,27 @@ function MapInitFix() {
   useEffect(() => {
     const t = setTimeout(() => map.invalidateSize(), 50);
     return () => clearTimeout(t);
+  }, [map]);
+  return null;
+}
+
+// Leaflet can leave markers/overlays at stale pixel positions after the tab was
+// hidden (phone lock / background) even though their underlying data updated —
+// that's why the GPS dot appeared frozen while the walk still auto-completed at
+// the destination. Forcing invalidateSize on return to visibility redraws every
+// layer against their current coordinates.
+function MapVisibilityFix() {
+  const map = useMap();
+  useEffect(() => {
+    const onVisible = () => {
+      if (document.visibilityState === 'visible') map.invalidateSize();
+    };
+    document.addEventListener('visibilitychange', onVisible);
+    window.addEventListener('pageshow', onVisible); // bfcache back/forward restore
+    return () => {
+      document.removeEventListener('visibilitychange', onVisible);
+      window.removeEventListener('pageshow', onVisible);
+    };
   }, [map]);
   return null;
 }

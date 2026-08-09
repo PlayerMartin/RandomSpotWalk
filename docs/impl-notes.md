@@ -18,7 +18,7 @@ A mobile-first web app where a user sets a start point + radius, generates a **r
 | Maps | **react-leaflet v5** + Leaflet 1.9 | OSM light / CartoDB dark tiles |
 | State | Zustand v5 | 6 small stores |
 | Styling | Tailwind v4 (`@tailwindcss/vite`) | `@import "tailwindcss"` in `index.css` |
-| Persistence | localStorage | 3 keys |
+| Persistence | localStorage | 5 keys (history, gamification, map style, active walk, setup draft) + map view |
 | GPS | `navigator.geolocation.watchPosition` | requires secure context |
 
 ## 3. Setup & Commands
@@ -116,6 +116,19 @@ These are the parts that visually look fine but are easy to break:
    === false`) so the UI shows "GPS blocked: needs HTTPS" instead of failing silently
    (Setup and Walking screens render `gpsStore.error`).
 
+8. **Phone lock → frozen location (two-part fix).** When the phone is locked, the
+   browser suspends the tab. On unlock it can resume with a stale on-screen GPS dot
+   even though position data is actually flowing (the walk still auto-completes at the
+   destination — evidence the acquisition is fine and only the overlay rendering is
+   stale). Two guards cover this:
+   - `MapVisibilityFix` (in `MapView.tsx`) calls `map.invalidateSize()` whenever the
+     page returns to `visibilityState === 'visible'` (or `pageshow` for bfcache),
+     forcing Leaflet to redraw markers at their current coordinates.
+   - `useGeolocation` calls `gpsStore.restartWatching()` on the same visibility events:
+     it clears the suspended watch, seeds a fresh one-shot fix via
+     `requestCurrentPosition` (which runs independently of the watch), then re-registers
+     the watch — so the stored position value itself can't stay stuck.
+
 8. **`verbatimModuleSyntax` is ON.** Cross-referenced types must use
    `import type { ... }`, and value imports must stay value imports. Mixed type/value
    imports from the same module are fine as two separate statements (e.g. `MapView.tsx`).
@@ -133,8 +146,10 @@ These are the parts that visually look fine but are easy to break:
 | `random-spot-walk-gamification` | `GamificationState` (`currentStreak`, `bestStreak`, `lastWalkDate`, `achievements[]`) |
 | `random-spot-walk-map-style` | `'light' \| 'dark'` |
 | `random-spot-walk-active` | `ActiveWalk` (in-progress walk; `null`/absent when none) |
+| `random-spot-walk-setup` | `SetupState` (setup-screen draft; absent after a walk starts) |
+| `random-spot-walk-map-view` | `MapViewState` (last viewport) |
 
-`Walk` / `GamificationState` / `Achievement` / `ActiveWalk` types live in `types/index.ts`.
+`Walk` / `GamificationState` / `Achievement` / `ActiveWalk` / `SetupState` types live in `types/index.ts`.
 See `storage.ts` for `try/catch`-wrapped helpers that return safe defaults on corrupt data; `achievements.ts` holds the hard-coded achievement catalog.
 
 ### Active-walk persistence (resume after refresh/restart)
@@ -146,6 +161,17 @@ so the walking screen (with GPS + timer) resumes with no setup-screen flash. Ela
 not stored — it's recomputed from `startedAt`, so it stays accurate across reloads. `loadActiveWalk`
 runs `isValidActiveWalk`, a structural guard so a corrupt/partial payload doesn't resurrect a
 broken walk.
+
+### Setup-draft persistence (resume mid-setup)
+
+The setup screen's state (start point, generated destination, radius, difficulty, countdown) is
+persisted under `random-spot-walk-setup` (`SetupState`) **on every change while `phase === 'setup'`**
+— `appStore` registers a `useAppStore.subscribe` listener that calls `saveSetup(...)` and skips any
+other phase. At store creation, when there's **no** active walk, `loadSetup()` hydrates the draft so
+a refresh/restart mid-setup keeps the user's work (otherwise it starts from defaults). The draft is
+cleared in `startWalk()` (`clearSetup()`) once it's consumed, so finishing a walk returns to fresh
+defaults rather than resurrecting stale config. `loadSetup` runs `isValidSetupState`, a structural
+guard mirroring `isValidActiveWalk`.
 
 ## 7. Key Flows
 
