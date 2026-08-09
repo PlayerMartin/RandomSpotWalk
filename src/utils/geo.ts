@@ -34,7 +34,6 @@ export function haversineDistance(a: LatLng, b: LatLng): number {
  */
 export function randomPointInCircle(center: LatLng, radiusKm: number): LatLng {
   const angle = Math.random() * 2 * Math.PI;
-  // Uniform distribution over the disk: radius = R * sqrt(u), u ∈ [0,1)
   const r = radiusKm * Math.sqrt(Math.random());
 
   const dLat = r / KM_PER_DEG_LAT;

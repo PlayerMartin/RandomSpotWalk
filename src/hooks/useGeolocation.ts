@@ -2,11 +2,8 @@ import { useEffect } from 'react';
 import { useGpsStore } from '../stores/gpsStore';
 
 /**
- * Manages the geolocation watch lifecycle. Starts watching when `active` is
- * true, stops when false or on unmount. Also re-establishes GPS when the tab
- * returns to the foreground (phone unlock), because mobile browsers suspend
- * geolocation callbacks while hidden and a stale watch can leave the location
- * frozen on the pre-sleep value.
+ * Manages the GPS watch lifecycle: start/stop with `active`, and re-establish
+ * GPS when the tab re-focuses (phone lock) — see docs/technical/gotchas.md #8.
  */
 export function useGeolocation(active: boolean): void {
   const startWatching = useGpsStore((s) => s.startWatching);

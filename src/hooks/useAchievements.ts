@@ -1,10 +1,6 @@
 import { useAppStore } from '../stores/appStore';
 import type { Achievement } from '../types';
 
-/**
- * Thin wrapper around appStore's `newlyUnlocked` list (set on walk
- * completion) with a way to clear it after toasts are dismissed.
- */
 export function useAchievements(): {
   newlyUnlocked: Achievement[];
   clearNewlyUnlocked: () => void;

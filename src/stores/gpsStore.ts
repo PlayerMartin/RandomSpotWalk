@@ -25,8 +25,7 @@ export const useGpsStore = create<GpsState>((set, get) => ({
   startWatching: () => {
     if (get().watching) return;
     if (!('geolocation' in navigator)) {
-      // On mobile, geolocation is only exposed in a secure context (HTTPS
-      // or localhost). Plain http:// over the LAN blocks it silently.
+      // Mobile needs a secure context (HTTPS/localhost) — plain http blocks it silently.
       set({
         error:
           window.isSecureContext === false
@@ -68,12 +67,9 @@ export const useGpsStore = create<GpsState>((set, get) => ({
     set({ watching: false, watchId: null });
   },
 
-  // Re-establish GPS after the page returns to the foreground (phone unlock /
-  // tab re-focus). Mobile browsers suspend geolocation callbacks while the tab
-  // is hidden, and a suspended watch can come back without delivering a fresh
-  // fix. We clear the old watch, seed a current position immediately via a
-  // one-shot request, then re-register the watch — so the location isn't stuck
-  // on the pre-sleep value.
+  // Mobile browsers suspend geolocation callbacks while the tab is hidden; on
+  // re-show, clear the watch, seed a one-shot fix, then re-register — so the
+  // stored position can't stay stuck on the pre-sleep value (gotchas.md #8).
   restartWatching: () => {
     const { watchId, watching } = get();
     if (watching && watchId !== null && 'geolocation' in navigator) {
@@ -84,10 +80,9 @@ export const useGpsStore = create<GpsState>((set, get) => ({
     get().startWatching();
   },
 
-  // One-shot location request used by "Use my location". Unlike the watch
-  // (which is guarded by `watching`), this ALWAYS attempts a fresh request and
-  // fires the native permission prompt — even if a watch is already active —
-  // so clicking the button after enabling GPS works without a page refresh.
+  // One-shot request for "Use my location": ALWAYS attempts a fresh fix (fires
+  // the permission prompt) even while a watch is active, so the button works
+  // right after enabling GPS — see docs/technical/flows.md.
   requestCurrentPosition: (onSuccess, onError) => {
     if (!('geolocation' in navigator)) {
       set({

@@ -31,7 +31,6 @@ export function WalkingScreen() {
   const distance = gps && destPoint ? haversineDistance(gps, destPoint) : null;
   const arrived = distance !== null && distance <= threshold;
 
-  // Auto-complete on arrival
   useEffect(() => {
     if (arrived) completeWalk();
   }, [arrived, completeWalk]);

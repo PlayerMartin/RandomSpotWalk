@@ -7,8 +7,7 @@ interface TimerResult {
 }
 
 /**
- * Date-based elapsed timer plus optional countdown.
- * Survives tab sleep because it's computed from wall-clock time.
+ * Date-based elapsed + optional countdown — survives tab sleep (wall-clock).
  */
 export function useTimer(
   startedAt: string | null,
@@ -20,7 +19,7 @@ export function useTimer(
   useEffect(() => {
     if (!startedAt) return;
     const id = setInterval(() => setNow(Date.now()), 1000);
-    // Force an immediate update when a walk starts so the timer isn't stale
+    // Update immediately when a walk starts so the timer isn't stale.
     setNow(Date.now());
     return () => clearInterval(id);
   }, [startedAt]);

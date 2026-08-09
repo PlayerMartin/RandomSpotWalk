@@ -42,13 +42,9 @@ function elapsedSince(iso: string): number {
 }
 
 export const useAppStore = create<AppState>((set, get) => {
-  // Restore an in-progress walk synchronously at store creation so a page
-  // refresh / browser restart resumes straight into the walking screen
-  // (no flash of the setup screen, and GPS/timer pick up where they left off).
+  // Rehydrate the active walk (or setup draft when none) synchronously so a
+  // refresh resumes without a setup flash — see docs/technical/storage.md.
   const active = loadActiveWalk();
-  // When there's no in-progress walk, restore the setup draft so a refresh
-  // mid-setup keeps the user's config (start point, dest, radius, difficulty,
-  // countdown) intact.
   const draft = !active ? loadSetup() : null;
 
   return {
@@ -90,11 +86,9 @@ export const useAppStore = create<AppState>((set, get) => {
       const startedAt = new Date().toISOString();
       set({ phase: 'walking', startedAt });
 
-      // The setup draft has been consumed — drop it so we don't resurrect
-      // stale config when the walk finishes and returns to setup.
+      // Draft consumed — drop it so finishing a walk returns to fresh defaults.
       clearSetup();
-
-      // Persist so a refresh/restart can resume this walk.
+      // Persist so a refresh can resume this walk.
       saveActiveWalk({
         startPoint,
         destPoint,
@@ -170,10 +164,8 @@ export const useAppStore = create<AppState>((set, get) => {
   };
 });
 
-// Persist the setup draft whenever the setup screen changes, so a page
-// refresh / browser restart mid-setup keeps the user's config (start point,
-// generated destination, radius, difficulty, countdown) intact. Skipped outside
-// the setup phase — an in-progress walk is covered by the active-walk record.
+// Persist the setup draft on every setup change (skipped in other phases — an
+// in-progress walk is covered by the active-walk record). See storage.md.
 useAppStore.subscribe((state) => {
   if (state.phase !== 'setup') return;
   saveSetup({

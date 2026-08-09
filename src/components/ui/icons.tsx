@@ -1,10 +1,8 @@
 import type { ReactNode } from 'react';
 
 /*
- * Inline SVG icon set for Random Spot Walk.
- * A single consistent, stroke-based family (1.75px rounded strokes,
- * currentColor) so every icon shares the same visual weight across
- * the app. Replaces the previous emoji glyphs.
+ * Single stroke-based icon family (1.75px rounded strokes, currentColor),
+ * replacing the previous emoji glyphs.
  */
 
 interface IconProps {

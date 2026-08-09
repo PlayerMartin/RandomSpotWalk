@@ -155,9 +155,8 @@ export function clearActiveWalk(): void {
 }
 
 // ── Setup draft config ──
-// Persists the setup screen's state so a refresh/restart mid-setup keeps the
-// user's work. Written on every setup change; read at app start (when there's
-// no in-progress walk); cleared when a walk starts.
+// Persists the setup screen's state so a refresh mid-setup keeps the user's
+// work. Written on every setup change; cleared when a walk starts.
 
 function isValidLatLngOrNull(v: unknown): v is LatLng | null {
   if (v === null) return true;

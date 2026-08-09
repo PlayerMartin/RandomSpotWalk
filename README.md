@@ -16,4 +16,4 @@ npm run preview    # HTTPS preview of the build
 ## Development notes
 
 - The dev/preview servers are **HTTPS-only**, which is required for the browser GPS API on a phone. Generate certs with [mkcert](https://github.com/FiloSottile/mkcert) into `.certs/` before running `npm run dev`.
-- Node 20 LTS is recommended (see `docs/impl-notes.md`).
+- Node 20 LTS is recommended (see [`docs/product/overview.md`](docs/product/overview.md)).

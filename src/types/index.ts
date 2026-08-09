@@ -63,10 +63,9 @@ export interface MapViewState {
 }
 
 // ── Active (in-progress) Walk ──
-// Subset of app state needed to resume an in-progress walk after a page
-// refresh or browser restart. Persisted under `random-spot-walk-active`.
-// The elapsed time is not stored — it's recomputed from `startedAt`, so
-// the timer stays accurate across reloads.
+// Subset of app state to resume a walk after a refresh; elapsed is recomputed
+// from `startedAt` so it stays accurate. Persisted under `random-spot-walk-active`.
+// See docs/technical/storage.md.
 export interface ActiveWalk {
   startPoint: LatLng;
   destPoint: LatLng;
@@ -77,10 +76,9 @@ export interface ActiveWalk {
 }
 
 // ── Setup draft config ──
-// The in-progress setup screen's state, persisted every time it changes so a
-// page refresh / browser restart mid-setup keeps the user's work (start point,
-// generated destination, radius, difficulty, countdown). It's cleared once a
-// walk actually starts — the `ActiveWalk` record takes over from there.
+// The setup screen's state, persisted on every change so a refresh mid-setup
+// keeps the user's work; cleared once a walk starts (the ActiveWalk record
+// takes over). See docs/technical/storage.md.
 export interface SetupState {
   startPoint: LatLng | null;
   destPoint: LatLng | null;

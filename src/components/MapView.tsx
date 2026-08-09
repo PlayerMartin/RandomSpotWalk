@@ -9,7 +9,7 @@ import { useGpsStore } from "../stores/gpsStore";
 import { useSettingsStore } from "../stores/settingsStore";
 import { useAppStore } from "../stores/appStore";
 
-// ── Custom divIcons (avoid Leaflet's broken default image paths) ──
+// ── Custom divIcons (Leaflet's default marker PNGs 404 under bundlers) ──
 const DEFAULT_LOCATION: LatLng = { lat: 48.8584, lng: 2.2945 }; // centered-ish
 // Initial viewport: whatever was last saved, else the default.
 const INITIAL_CENTER = useSettingsStore.getState().mapView?.center ?? DEFAULT_LOCATION;
@@ -71,11 +71,8 @@ function MapController({
   }, [map]);
 
   useEffect(() => {
-    // Bottom padding keeps the fitted points visible ABOVE the bottom overlay
-    // panels: the setup control card (~340px tall) and the walking card
-    // (~190px). It was trimmed to 240/60 earlier, which hid the destination
-    // behind the setup card. On portrait, zoom is width-limited, so generous
-    // bottom padding costs nothing there — sides stay tight (8px).
+    // Bottom padding keeps fitted points above the overlay panels; sides stay
+    // tight (8px) on portrait. Tune per-phase if a card's height changes.
     const bottomPad = phase === "setup" ? 400 : phase === "walking" ? 280 : 60;
     const fitOptions = {
       paddingTopLeft: [8, 60] as [number, number],
@@ -163,11 +160,8 @@ function MapInitFix() {
   return null;
 }
 
-// Leaflet can leave markers/overlays at stale pixel positions after the tab was
-// hidden (phone lock / background) even though their underlying data updated —
-// that's why the GPS dot appeared frozen while the walk still auto-completed at
-// the destination. Forcing invalidateSize on return to visibility redraws every
-// layer against their current coordinates.
+// Leaflet can leave markers at stale pixel positions after the tab was hidden
+// (phone lock); invalidateSize on re-show redraws them (gotchas.md #8).
 function MapVisibilityFix() {
   const map = useMap();
   useEffect(() => {
@@ -184,9 +178,8 @@ function MapVisibilityFix() {
   return null;
 }
 
-// Binds start-point selection to the map container's DOM click event.
-// Leaflet's own 'click' events turned out to be unreliable in this
-// react-leaflet v5 setup, so we translate the DOM event directly.
+// Bind start-point selection to a DOM click on the container — Leaflet's own
+// 'click' is unreliable in react-leaflet v5 (see docs/technical/gotchas.md).
 function MapClickCapture({
   onMapClick,
 }: {

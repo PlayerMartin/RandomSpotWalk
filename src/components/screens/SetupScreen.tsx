@@ -28,11 +28,8 @@ export function SetupScreen() {
   const setGpsError = useGpsStore((s) => s.setError);
   const [locating, setLocating] = useState(false);
 
-  // "Use my location": if we already have a fix, use it directly and skip the
-  // live request — so toggling GPS off later won't surface "Locating…" or a
-  // "GPS off" warning even though a location is known. Otherwise run a fresh
-  // one-shot request (fires the browser's native prompt) and give feedback:
-  // a "Locating…" state, then either the point is placed or a message explains.
+  // If a fix is known, place it directly and skip the prompt; otherwise run a
+  // fresh one-shot request that fires the permission prompt + shows "Locating…".
   const handleUseLocation = () => {
     if (gps) {
       setGpsError(null);
@@ -55,9 +52,8 @@ export function SetupScreen() {
     timerSeconds !== null ? Math.max(1, Math.round(timerSeconds / 60)) : 15,
   );
 
-  // Radius is typed as text so it can be cleared while editing; it is only
-  // validated on submit. We keep the store in sync whenever it's a valid
-  // number so the map/radius effects still update live.
+  // Radius is typed as text so it can be cleared while editing; validated on
+  // submit but synced to the store on every valid keystroke.
   const [radiusDraft, setRadiusDraft] = useState<string>(() => String(radiusKm));
   const [radiusError, setRadiusError] = useState<string | null>(null);
 
