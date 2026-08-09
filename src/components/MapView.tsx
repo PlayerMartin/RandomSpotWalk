@@ -71,11 +71,12 @@ function MapController({
   }, [map]);
 
   useEffect(() => {
-    // Extra bottom room so points aren't hidden behind the setup control card.
-    // Sides are intentionally tight (8px) so the fitted radius circle nearly
-    // fills a phone's width on portrait — wide side padding is what zoomed the
-    // map out. 240px bottom + 60px top still clears the card/header.
-    const bottomPad = phase === "setup" ? 240 : 60;
+    // Bottom padding keeps the fitted points visible ABOVE the bottom overlay
+    // panels: the setup control card (~340px tall) and the walking card
+    // (~190px). It was trimmed to 240/60 earlier, which hid the destination
+    // behind the setup card. On portrait, zoom is width-limited, so generous
+    // bottom padding costs nothing there — sides stay tight (8px).
+    const bottomPad = phase === "setup" ? 400 : phase === "walking" ? 280 : 60;
     const fitOptions = {
       paddingTopLeft: [8, 60] as [number, number],
       paddingBottomRight: [8, bottomPad] as [number, number],
@@ -83,7 +84,13 @@ function MapController({
 
     if (startPoint && destPoint) {
       hadStartRef.current = true;
-      const bounds = L.latLngBounds([startPoint, destPoint]);
+      // Keep the destination, the start point and — when a GPS fix is known —
+      // the user's current location all on screen together.
+      const gpsPos = useGpsStore.getState().position;
+      const fitPoints: LatLng[] = gpsPos
+        ? [startPoint, destPoint, gpsPos]
+        : [startPoint, destPoint];
+      const bounds = L.latLngBounds(fitPoints);
       map.fitBounds(bounds, fitOptions);
     } else if (startPoint) {
       hadStartRef.current = true;
@@ -213,6 +220,7 @@ export function SetupOverlays({
   radiusKm: number;
   difficulty: Difficulty;
 }) {
+  const gps = useGpsStore((s) => s.position);
   return (
     <>
       {startPoint && (
@@ -228,6 +236,9 @@ export function SetupOverlays({
         />
       )}
       {startPoint && <Marker position={startPoint} icon={startIcon} />}
+      {/* Show the current location whenever a GPS fix exists, so the spot,
+          start and position are all visible at generation time. */}
+      {gps && <Marker position={gps} icon={gpsIcon} zIndexOffset={1000} />}
       {destPoint && (
         <>
           <Marker position={destPoint} icon={destIcon} />

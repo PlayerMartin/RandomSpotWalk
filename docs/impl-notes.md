@@ -97,10 +97,13 @@ These are the parts that visually look fine but are easy to break:
 4. **MapController keeps zoom on Cancel.** It uses `hadStartRef` so the default
    `setView` only runs on first mount; clearing the start point must not reset the view.
 
-5. **Bottom overlay padding.** In `setup` phase `MapController` adds `240px` bottom
-   padding to `fitBounds` (plus `24px` left/right, `60px` top) so the destination isn't
-   hidden behind the setup card without zooming the fitted circle out too far;
-   other phases use `60px`. Tune the `240` constant if the card's height changes.
+5. **Bottom overlay padding.** Bottom padding keeps fitted points visible
+   **above** the bottom overlay panels (trimming it hides the destination
+   behind the card). `MapController` uses `400px` in `setup` (control card,
+   ~340px tall), `280px` in `walking`, and `60px` in `completed`, with `8px`
+   left/right and `60px` top. On portrait, zoom is width-limited, so the
+   bottom padding can be generous without zooming out — keep the side padding
+   tight instead. Tune the per-phase constants if a card's height changes.
 
 6. **Store coordination (side effects between stores).** `appStore`'s
    `completeWalk`/`cancelWalk` call siblings via `useHistoryStore.getState().addWalk()`
