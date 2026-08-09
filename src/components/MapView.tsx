@@ -71,11 +71,14 @@ function MapController({
   }, [map]);
 
   useEffect(() => {
-    // Extra bottom room so points aren't hidden behind the setup control card
-    const bottomPad = phase === "setup" ? 340 : 60;
+    // Extra bottom room so points aren't hidden behind the setup control card.
+    // Sides are intentionally tight (8px) so the fitted radius circle nearly
+    // fills a phone's width on portrait — wide side padding is what zoomed the
+    // map out. 240px bottom + 60px top still clears the card/header.
+    const bottomPad = phase === "setup" ? 240 : 60;
     const fitOptions = {
-      paddingTopLeft: [60, 60] as [number, number],
-      paddingBottomRight: [60, bottomPad] as [number, number],
+      paddingTopLeft: [8, 60] as [number, number],
+      paddingBottomRight: [8, bottomPad] as [number, number],
     };
 
     if (startPoint && destPoint) {
