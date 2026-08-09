@@ -1,4 +1,4 @@
-import { IconTimer } from './icons';
+import { IconTimer } from "./icons";
 
 export function TimerToggle({
   enabled,
@@ -13,7 +13,10 @@ export function TimerToggle({
 }) {
   return (
     <div className="flex items-center gap-3 rounded-xl border border-line bg-bone px-3.5 py-2.5">
-      <IconTimer size={18} className={enabled ? 'text-pine' : 'text-ink-muted'} />
+      <IconTimer
+        size={18}
+        className={enabled ? "text-pine" : "text-ink-muted"}
+      />
       <button
         type="button"
         role="switch"
@@ -22,19 +25,21 @@ export function TimerToggle({
         className="flex flex-1 items-center justify-between gap-3 text-left"
       >
         <span>
-          <span className="block text-sm font-semibold text-ink">Countdown timer</span>
+          <span className="block text-sm font-semibold text-ink">
+            Countdown timer
+          </span>
           <span className="block text-[11px] font-normal text-ink-muted">
             Walk ends when it runs out
           </span>
         </span>
         <span
           className={`relative h-6 w-11 shrink-0 rounded-full transition ${
-            enabled ? 'bg-pine' : 'bg-line'
+            enabled ? "bg-pine" : "bg-line"
           }`}
         >
           <span
             className={`absolute top-0.5 h-5 w-5 rounded-full bg-white shadow transition-transform ${
-              enabled ? 'translate-x-[22px]' : 'translate-x-0.5'
+              enabled ? "translate-x-[22px]" : "translate-x-0.5"
             }`}
           />
         </span>

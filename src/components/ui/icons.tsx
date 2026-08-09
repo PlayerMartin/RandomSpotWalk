@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react';
+import type { ReactNode } from "react";
 
 /*
  * Single stroke-based icon family (1.75px rounded strokes, currentColor),

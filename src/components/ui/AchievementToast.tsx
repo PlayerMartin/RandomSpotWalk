@@ -1,5 +1,5 @@
-import type { Achievement } from '../../types';
-import { IconTrophy, IconClose } from './icons';
+import type { Achievement } from "../../types";
+import { IconTrophy, IconClose } from "./icons";
 
 export function AchievementToast({
   achievement,

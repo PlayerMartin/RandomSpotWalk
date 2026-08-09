@@ -1,10 +1,17 @@
-import { create } from 'zustand';
-import type { Achievement, AppPhase, Difficulty, LatLng, Walk } from '../types';
-import { DIFFICULTY_THRESHOLDS } from '../types';
-import { randomPointInCircle } from '../utils/geo';
-import { clearActiveWalk, clearSetup, loadActiveWalk, loadSetup, saveActiveWalk, saveSetup } from '../utils/storage';
-import { useHistoryStore } from './historyStore';
-import { useGamificationStore } from './gamificationStore';
+import { create } from "zustand";
+import type { Achievement, AppPhase, Difficulty, LatLng, Walk } from "../types";
+import { DIFFICULTY_THRESHOLDS } from "../types";
+import { randomPointInCircle } from "../utils/geo";
+import {
+  clearActiveWalk,
+  clearSetup,
+  loadActiveWalk,
+  loadSetup,
+  saveActiveWalk,
+  saveSetup,
+} from "../utils/storage";
+import { useHistoryStore } from "./historyStore";
+import { useGamificationStore } from "./gamificationStore";
 
 interface AppState {
   phase: AppPhase;
@@ -31,7 +38,7 @@ interface AppState {
 }
 
 function buildWalkId(): string {
-  if (typeof crypto !== 'undefined' && 'randomUUID' in crypto) {
+  if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return crypto.randomUUID();
   }
   return `${Date.now()}-${Math.random().toString(36).slice(2)}`;
@@ -48,12 +55,12 @@ export const useAppStore = create<AppState>((set, get) => {
   const draft = !active ? loadSetup() : null;
 
   return {
-    phase: active ? 'walking' : 'setup',
-    startPoint: active ? active.startPoint : draft?.startPoint ?? null,
-    destPoint: active ? active.destPoint : draft?.destPoint ?? null,
-    radiusKm: active ? active.radiusKm : draft?.radiusKm ?? 1,
-    difficulty: active ? active.difficulty : draft?.difficulty ?? 'easy',
-    timerSeconds: active ? active.timerSeconds : draft?.timerSeconds ?? null,
+    phase: active ? "walking" : "setup",
+    startPoint: active ? active.startPoint : (draft?.startPoint ?? null),
+    destPoint: active ? active.destPoint : (draft?.destPoint ?? null),
+    radiusKm: active ? active.radiusKm : (draft?.radiusKm ?? 1),
+    difficulty: active ? active.difficulty : (draft?.difficulty ?? "easy"),
+    timerSeconds: active ? active.timerSeconds : (draft?.timerSeconds ?? null),
     startedAt: active ? active.startedAt : null,
     completedWalk: null,
     newlyUnlocked: [],
@@ -81,10 +88,11 @@ export const useAppStore = create<AppState>((set, get) => {
     },
 
     startWalk: () => {
-      const { startPoint, destPoint, radiusKm, difficulty, timerSeconds } = get();
+      const { startPoint, destPoint, radiusKm, difficulty, timerSeconds } =
+        get();
       if (!startPoint || !destPoint) return;
       const startedAt = new Date().toISOString();
-      set({ phase: 'walking', startedAt });
+      set({ phase: "walking", startedAt });
 
       // Draft consumed — drop it so finishing a walk returns to fresh defaults.
       clearSetup();
@@ -100,7 +108,7 @@ export const useAppStore = create<AppState>((set, get) => {
     },
 
     completeWalk: () => {
-      if (get().phase !== 'walking') return; // idempotency guard
+      if (get().phase !== "walking") return; // idempotency guard
       const s = get();
       if (!s.startedAt || !s.startPoint || !s.destPoint) return;
       const walk: Walk = {
@@ -114,22 +122,24 @@ export const useAppStore = create<AppState>((set, get) => {
         thresholdMeters: DIFFICULTY_THRESHOLDS[s.difficulty],
         timerSetSeconds: s.timerSeconds,
         elapsedSeconds: elapsedSince(s.startedAt),
-        status: 'completed',
+        status: "completed",
       };
 
       clearActiveWalk();
       useHistoryStore.getState().addWalk(walk);
-      const newest = useGamificationStore.getState().processWalkCompletion(walk);
+      const newest = useGamificationStore
+        .getState()
+        .processWalkCompletion(walk);
 
       set({
-        phase: 'completed',
+        phase: "completed",
         completedWalk: walk,
         newlyUnlocked: newest,
       });
     },
 
     cancelWalk: () => {
-      if (get().phase !== 'walking') return; // idempotency guard
+      if (get().phase !== "walking") return; // idempotency guard
       const s = get();
       if (!s.startedAt || !s.startPoint || !s.destPoint) return;
       const walk: Walk = {
@@ -143,18 +153,18 @@ export const useAppStore = create<AppState>((set, get) => {
         thresholdMeters: DIFFICULTY_THRESHOLDS[s.difficulty],
         timerSetSeconds: s.timerSeconds,
         elapsedSeconds: elapsedSince(s.startedAt),
-        status: 'cancelled',
+        status: "cancelled",
       };
 
       clearActiveWalk();
       useHistoryStore.getState().addWalk(walk);
-      set({ phase: 'setup', completedWalk: null, newlyUnlocked: [] });
+      set({ phase: "setup", completedWalk: null, newlyUnlocked: [] });
     },
 
     resetToSetup: () => {
       clearActiveWalk();
       set({
-        phase: 'setup',
+        phase: "setup",
         startedAt: null,
         completedWalk: null,
         newlyUnlocked: [],
@@ -167,7 +177,7 @@ export const useAppStore = create<AppState>((set, get) => {
 // Persist the setup draft on every setup change (skipped in other phases — an
 // in-progress walk is covered by the active-walk record). See storage.md.
 useAppStore.subscribe((state) => {
-  if (state.phase !== 'setup') return;
+  if (state.phase !== "setup") return;
   saveSetup({
     startPoint: state.startPoint,
     destPoint: state.destPoint,

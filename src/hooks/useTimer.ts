@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 
 interface TimerResult {
   elapsed: number;
@@ -32,7 +32,8 @@ export function useTimer(
   const elapsed = Math.max(0, Math.floor((now - base) / 1000));
   const remaining =
     countdownSeconds === null ? null : Math.max(0, countdownSeconds - elapsed);
-  const isExpired = countdownSeconds !== null && remaining !== null && remaining <= 0;
+  const isExpired =
+    countdownSeconds !== null && remaining !== null && remaining <= 0;
 
   return { elapsed, remaining, isExpired };
 }

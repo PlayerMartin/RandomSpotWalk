@@ -1,17 +1,17 @@
-import { useEffect } from 'react';
-import { useAppStore } from '../../stores/appStore';
-import { useGpsStore } from '../../stores/gpsStore';
-import { useGeolocation } from '../../hooks/useGeolocation';
-import { useTimer } from '../../hooks/useTimer';
-import { haversineDistance, formatDistance } from '../../utils/geo';
-import { DIFFICULTY_THRESHOLDS } from '../../types';
-import type { Difficulty } from '../../types';
-import { IconClose, IconFlag, IconTimer } from '../ui/icons';
+import { useEffect } from "react";
+import { useAppStore } from "../../stores/appStore";
+import { useGpsStore } from "../../stores/gpsStore";
+import { useGeolocation } from "../../hooks/useGeolocation";
+import { useTimer } from "../../hooks/useTimer";
+import { haversineDistance, formatDistance } from "../../utils/geo";
+import { DIFFICULTY_THRESHOLDS } from "../../types";
+import type { Difficulty } from "../../types";
+import { IconClose, IconFlag, IconTimer } from "../ui/icons";
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
   const s = totalSeconds % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
 export function WalkingScreen() {
@@ -58,9 +58,11 @@ export function WalkingScreen() {
               Distance to spot
             </p>
             <p className="mt-0.5 text-4xl font-extrabold tabular-nums tracking-tight text-pine">
-              {distance !== null ? formatDistance(distance) : '—'}
+              {distance !== null ? formatDistance(distance) : "—"}
             </p>
-            <p className="text-xs text-ink-muted">within {threshold}m of the blaze</p>
+            <p className="text-xs text-ink-muted">
+              within {threshold}m of the blaze
+            </p>
           </div>
 
           <div className="shrink-0 text-right">
@@ -76,11 +78,15 @@ export function WalkingScreen() {
               <div className="mt-1 flex items-center justify-end gap-1 rounded-xl bg-bone px-3 py-1">
                 <IconTimer
                   size={12}
-                  className={remaining <= 60 ? 'text-danger-text' : 'text-ink-muted'}
+                  className={
+                    remaining <= 60 ? "text-danger-text" : "text-ink-muted"
+                  }
                 />
                 <p className="text-lg font-bold tabular-nums tracking-tight">
                   <span
-                    className={remaining <= 60 ? 'text-danger-text' : 'text-ink'}
+                    className={
+                      remaining <= 60 ? "text-danger-text" : "text-ink"
+                    }
                   >
                     {formatTime(remaining)}
                   </span>

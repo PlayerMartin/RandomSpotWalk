@@ -1,4 +1,4 @@
-import { IconTarget, IconRefresh, IconWalk } from './icons';
+import { IconTarget, IconRefresh, IconWalk } from "./icons";
 
 interface ActionButtonsProps {
   hasDest: boolean;

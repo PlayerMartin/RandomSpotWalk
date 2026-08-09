@@ -1,11 +1,11 @@
-import { useState } from 'react';
-import { useAppStore } from '../../stores/appStore';
-import { useGpsStore } from '../../stores/gpsStore';
-import { RadiusInput } from '../ui/RadiusInput';
-import { DifficultySelector } from '../ui/DifficultySelector';
-import { TimerToggle } from '../ui/TimerToggle';
-import { ActionButtons } from '../ui/ActionButtons';
-import { IconPin, IconClose, IconTarget } from '../ui/icons';
+import { useState } from "react";
+import { useAppStore } from "../../stores/appStore";
+import { useGpsStore } from "../../stores/gpsStore";
+import { RadiusInput } from "../ui/RadiusInput";
+import { DifficultySelector } from "../ui/DifficultySelector";
+import { TimerToggle } from "../ui/TimerToggle";
+import { ActionButtons } from "../ui/ActionButtons";
+import { IconPin, IconClose, IconTarget } from "../ui/icons";
 
 export function SetupScreen() {
   const startPoint = useAppStore((s) => s.startPoint);
@@ -54,20 +54,22 @@ export function SetupScreen() {
 
   // Radius is typed as text so it can be cleared while editing; validated on
   // submit but synced to the store on every valid keystroke.
-  const [radiusDraft, setRadiusDraft] = useState<string>(() => String(radiusKm));
+  const [radiusDraft, setRadiusDraft] = useState<string>(() =>
+    String(radiusKm),
+  );
   const [radiusError, setRadiusError] = useState<string | null>(null);
 
   const handleRadiusText = (text: string) => {
     setRadiusDraft(text);
     const v = parseFloat(text);
     if (Number.isFinite(v)) setRadius(v);
-    if (text.trim() !== '') setRadiusError(null);
+    if (text.trim() !== "") setRadiusError(null);
   };
 
   const validateRadius = (): boolean => {
     const v = parseFloat(radiusDraft);
-    if (radiusDraft.trim() === '' || !Number.isFinite(v) || v <= 0) {
-      setRadiusError('Select a valid radius in km');
+    if (radiusDraft.trim() === "" || !Number.isFinite(v) || v <= 0) {
+      setRadiusError("Select a valid radius in km");
       return false;
     }
     setRadiusError(null);
@@ -113,7 +115,9 @@ export function SetupScreen() {
           {(locating || gpsError) && (
             <div
               className={`flex max-w-xs items-center gap-2 rounded-xl px-4 py-2.5 text-center text-xs font-semibold leading-relaxed shadow-md ${
-                locating ? 'bg-warn-bg text-warn-text' : 'bg-danger-bg text-danger-text'
+                locating
+                  ? "bg-warn-bg text-warn-text"
+                  : "bg-danger-bg text-danger-text"
               }`}
               role="status"
             >
@@ -148,7 +152,11 @@ export function SetupScreen() {
             </button>
           </div>
           <div className="space-y-4">
-            <RadiusInput value={radiusDraft} onChange={handleRadiusText} error={radiusError} />
+            <RadiusInput
+              value={radiusDraft}
+              onChange={handleRadiusText}
+              error={radiusError}
+            />
             <DifficultySelector value={difficulty} onChange={setDifficulty} />
             <TimerToggle
               enabled={timerEnabled}

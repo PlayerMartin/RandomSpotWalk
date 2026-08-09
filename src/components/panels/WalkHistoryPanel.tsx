@@ -1,37 +1,37 @@
-import { useState } from 'react';
-import { useHistoryStore } from '../../stores/historyStore';
-import { useUiStore } from '../../stores/uiStore';
-import { DIFFICULTY_LABELS } from '../../types';
-import type { Walk } from '../../types';
-import { IconClose, IconWalk, IconTrash, IconFlag } from '../ui/icons';
+import { useState } from "react";
+import { useHistoryStore } from "../../stores/historyStore";
+import { useUiStore } from "../../stores/uiStore";
+import { DIFFICULTY_LABELS } from "../../types";
+import type { Walk } from "../../types";
+import { IconClose, IconWalk, IconTrash, IconFlag } from "../ui/icons";
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
   const s = totalSeconds % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
 function formatDate(iso: string): string {
   return new Date(iso).toLocaleDateString(undefined, {
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
+    month: "short",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 
 function WalkRow({ walk }: { walk: Walk }) {
-  const cancelled = walk.status === 'cancelled';
+  const cancelled = walk.status === "cancelled";
   return (
     <div
       className={`flex items-center justify-between rounded-xl border px-3 py-3 ${
-        cancelled ? 'border-line bg-bone' : 'border-moss/40 bg-moss-soft/60'
+        cancelled ? "border-line bg-bone" : "border-moss/40 bg-moss-soft/60"
       }`}
     >
       <div className="flex min-w-0 items-center gap-3">
         <span
           className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-lg ${
-            cancelled ? 'bg-sand text-ink-muted' : 'bg-pine text-white'
+            cancelled ? "bg-sand text-ink-muted" : "bg-pine text-white"
           }`}
         >
           {cancelled ? <IconClose size={15} /> : <IconFlag size={15} />}
@@ -39,7 +39,7 @@ function WalkRow({ walk }: { walk: Walk }) {
         <div className="min-w-0">
           <div className="flex items-center gap-1.5">
             <span className="text-sm font-bold text-ink">
-              {cancelled ? 'Cancelled' : 'Completed'}
+              {cancelled ? "Cancelled" : "Completed"}
             </span>
             <span className="rounded bg-bone px-1.5 py-0.5 text-[10px] font-bold uppercase text-ink-muted">
               {DIFFICULTY_LABELS[walk.difficulty]}
@@ -51,7 +51,7 @@ function WalkRow({ walk }: { walk: Walk }) {
             )}
           </div>
           <p className="mt-0.5 truncate text-xs text-ink-muted">
-            {walk.destinationPoint.lat.toFixed(4)},{' '}
+            {walk.destinationPoint.lat.toFixed(4)},{" "}
             {walk.destinationPoint.lng.toFixed(4)}
           </p>
         </div>
@@ -60,7 +60,9 @@ function WalkRow({ walk }: { walk: Walk }) {
         <p className="text-sm font-bold tabular-nums text-ink">
           {formatTime(walk.elapsedSeconds)}
         </p>
-        <p className="text-[11px] text-ink-muted">{formatDate(walk.completedAt)}</p>
+        <p className="text-[11px] text-ink-muted">
+          {formatDate(walk.completedAt)}
+        </p>
       </div>
     </div>
   );

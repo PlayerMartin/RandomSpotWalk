@@ -23,20 +23,20 @@ export function RadiusInput({
           onChange={(e) => {
             // Digits plus a single decimal point; a trailing/blank value is
             // allowed while typing (validation happens on submit instead).
-            let cleaned = e.target.value.replace(/[^0-9.]/g, '');
-            const firstDot = cleaned.indexOf('.');
+            let cleaned = e.target.value.replace(/[^0-9.]/g, "");
+            const firstDot = cleaned.indexOf(".");
             if (firstDot !== -1) {
               cleaned =
                 cleaned.slice(0, firstDot + 1) +
-                cleaned.slice(firstDot + 1).replace(/\./g, '');
+                cleaned.slice(firstDot + 1).replace(/\./g, "");
             }
             onChange(cleaned);
           }}
           aria-invalid={invalid || undefined}
           className={`w-full rounded-xl border bg-bone py-2.5 pl-3.5 pr-12 text-lg font-bold text-ink outline-none transition ${
             invalid
-              ? 'border-danger-border focus:border-danger-border'
-              : 'border-line focus:border-pine'
+              ? "border-danger-border focus:border-danger-border"
+              : "border-line focus:border-pine"
           }`}
         />
         <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-sm font-semibold text-ink-muted">

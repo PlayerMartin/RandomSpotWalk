@@ -1,6 +1,6 @@
-import { create } from 'zustand';
-import type { Walk } from '../types';
-import { loadWalks, saveWalks } from '../utils/storage';
+import { create } from "zustand";
+import type { Walk } from "../types";
+import { loadWalks, saveWalks } from "../utils/storage";
 
 interface HistoryState {
   walks: Walk[];
@@ -31,5 +31,6 @@ export const useHistoryStore = create<HistoryState>((set, get) => ({
     saveWalks([]);
   },
 
-  completedCount: () => get().walks.filter((w) => w.status === 'completed').length,
+  completedCount: () =>
+    get().walks.filter((w) => w.status === "completed").length,
 }));

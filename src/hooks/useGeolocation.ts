@@ -1,5 +1,5 @@
-import { useEffect } from 'react';
-import { useGpsStore } from '../stores/gpsStore';
+import { useEffect } from "react";
+import { useGpsStore } from "../stores/gpsStore";
 
 /**
  * Manages the GPS watch lifecycle: start/stop with `active`, and re-establish
@@ -15,14 +15,14 @@ export function useGeolocation(active: boolean): void {
     startWatching();
 
     const onVisible = () => {
-      if (document.visibilityState === 'visible') restartWatching();
+      if (document.visibilityState === "visible") restartWatching();
     };
-    document.addEventListener('visibilitychange', onVisible);
-    window.addEventListener('pageshow', onVisible); // bfcache back/forward restore
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", onVisible); // bfcache back/forward restore
 
     return () => {
-      document.removeEventListener('visibilitychange', onVisible);
-      window.removeEventListener('pageshow', onVisible);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", onVisible);
       stopWatching();
     };
   }, [active, startWatching, stopWatching, restartWatching]);

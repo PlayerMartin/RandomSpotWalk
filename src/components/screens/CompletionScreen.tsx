@@ -1,23 +1,23 @@
-import { useEffect } from 'react';
-import { useAppStore } from '../../stores/appStore';
-import { useGamificationStore } from '../../stores/gamificationStore';
-import { useUiStore } from '../../stores/uiStore';
-import { useAchievements } from '../../hooks/useAchievements';
-import { AchievementToast } from '../ui/AchievementToast';
-import { DIFFICULTY_LABELS } from '../../types';
-import type { Walk } from '../../types';
+import { useEffect } from "react";
+import { useAppStore } from "../../stores/appStore";
+import { useGamificationStore } from "../../stores/gamificationStore";
+import { useUiStore } from "../../stores/uiStore";
+import { useAchievements } from "../../hooks/useAchievements";
+import { AchievementToast } from "../ui/AchievementToast";
+import { DIFFICULTY_LABELS } from "../../types";
+import type { Walk } from "../../types";
 import {
   IconFlag,
   IconFlame,
   IconCrown,
   IconWalk,
   IconHistory,
-} from '../ui/icons';
+} from "../ui/icons";
 
 function formatTime(totalSeconds: number): string {
   const m = Math.floor(totalSeconds / 60);
   const s = totalSeconds % 60;
-  return `${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
+  return `${String(m).padStart(2, "0")}:${String(s).padStart(2, "0")}`;
 }
 
 export function CompletionScreen() {
@@ -50,7 +50,11 @@ export function CompletionScreen() {
       {newlyUnlocked.length > 0 && (
         <div className="pointer-events-none fixed inset-x-0 top-20 z-[700] flex flex-col items-center gap-2 px-4">
           {newlyUnlocked.map((a) => (
-            <AchievementToast key={a.id} achievement={a} onDismiss={clearNewlyUnlocked} />
+            <AchievementToast
+              key={a.id}
+              achievement={a}
+              onDismiss={clearNewlyUnlocked}
+            />
           ))}
         </div>
       )}
@@ -81,7 +85,7 @@ export function CompletionScreen() {
           </div>
           <div className="rounded-2xl bg-sand p-4">
             <p className="text-[11px] font-bold uppercase tracking-wide text-ink-muted">
-              {remaining !== null ? 'Timer left' : 'Best streak'}
+              {remaining !== null ? "Timer left" : "Best streak"}
             </p>
             <p className="mt-0.5 text-3xl font-extrabold tabular-nums tracking-tight text-ink">
               {remaining !== null ? (
@@ -104,7 +108,7 @@ export function CompletionScreen() {
                 Streak
               </p>
               <p className="text-xl font-extrabold leading-tight tabular-nums">
-                {currentStreak} day{currentStreak === 1 ? '' : 's'}
+                {currentStreak} day{currentStreak === 1 ? "" : "s"}
               </p>
             </div>
           </div>
@@ -132,7 +136,7 @@ export function CompletionScreen() {
           </button>
           <button
             type="button"
-            onClick={() => openPanel('history')}
+            onClick={() => openPanel("history")}
             className="flex w-full items-center justify-center gap-2 rounded-2xl border border-line bg-bone px-4 py-3.5 text-base font-semibold text-ink active:bg-sand"
           >
             <IconHistory size={18} />

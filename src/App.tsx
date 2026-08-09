@@ -1,17 +1,22 @@
-import { useEffect, type ReactNode } from 'react';
-import { useAppStore } from './stores/appStore';
-import { useHistoryStore } from './stores/historyStore';
-import { useGamificationStore } from './stores/gamificationStore';
-import { useSettingsStore } from './stores/settingsStore';
-import { useUiStore } from './stores/uiStore';
-import { MapView, SetupOverlays, WalkingOverlays, CompletedOverlays } from './components/MapView';
-import { SetupScreen } from './components/screens/SetupScreen';
-import { WalkingScreen } from './components/screens/WalkingScreen';
-import { CompletionScreen } from './components/screens/CompletionScreen';
-import { MapThemeToggle } from './components/MapThemeToggle';
-import { WalkHistoryPanel } from './components/panels/WalkHistoryPanel';
-import { GamificationPanel } from './components/panels/GamificationPanel';
-import { IconTrophy, IconHistory, IconBug } from './components/ui/icons';
+import { useEffect, type ReactNode } from "react";
+import { useAppStore } from "./stores/appStore";
+import { useHistoryStore } from "./stores/historyStore";
+import { useGamificationStore } from "./stores/gamificationStore";
+import { useSettingsStore } from "./stores/settingsStore";
+import { useUiStore } from "./stores/uiStore";
+import {
+  MapView,
+  SetupOverlays,
+  WalkingOverlays,
+  CompletedOverlays,
+} from "./components/MapView";
+import { SetupScreen } from "./components/screens/SetupScreen";
+import { WalkingScreen } from "./components/screens/WalkingScreen";
+import { CompletionScreen } from "./components/screens/CompletionScreen";
+import { MapThemeToggle } from "./components/MapThemeToggle";
+import { WalkHistoryPanel } from "./components/panels/WalkHistoryPanel";
+import { GamificationPanel } from "./components/panels/GamificationPanel";
+import { IconTrophy, IconHistory, IconBug } from "./components/ui/icons";
 
 /* Diamond trail-blaze mark + a "spot" */
 function Logo() {
@@ -44,7 +49,10 @@ function IconButton({
       aria-label={label}
       title={label}
       className="flex h-11 w-11 items-center justify-center rounded-full bg-bone/90 text-ink-muted backdrop-blur transition active:bg-sand active:text-pine"
-      style={{ boxShadow: '0 1px 0 rgba(30,40,38,0.06), 0 8px 20px rgba(30,40,38,0.10)' }}
+      style={{
+        boxShadow:
+          "0 1px 0 rgba(30,40,38,0.06), 0 8px 20px rgba(30,40,38,0.10)",
+      }}
     >
       {children}
     </button>
@@ -69,7 +77,10 @@ function IconLink({
       aria-label={label}
       title={label}
       className="flex h-11 w-11 items-center justify-center rounded-full bg-bone/90 text-ink-muted backdrop-blur transition active:bg-sand active:text-pine"
-      style={{ boxShadow: '0 1px 0 rgba(30,40,38,0.06), 0 8px 20px rgba(30,40,38,0.10)' }}
+      style={{
+        boxShadow:
+          "0 1px 0 rgba(30,40,38,0.06), 0 8px 20px rgba(30,40,38,0.10)",
+      }}
     >
       {children}
     </a>
@@ -98,16 +109,16 @@ export default function App() {
   return (
     <div
       className={`relative w-full overflow-hidden bg-bone ${
-        mapTheme === 'dark' ? 'theme-dark' : ''
+        mapTheme === "dark" ? "theme-dark" : ""
       }`}
-      style={{ position: 'fixed', inset: 0, height: '100dvh' }}
+      style={{ position: "fixed", inset: 0, height: "100dvh" }}
     >
       <MapView
         onMapClick={(point) => {
-          if (phase === 'setup') setStartPoint(point);
+          if (phase === "setup") setStartPoint(point);
         }}
       >
-        {phase === 'setup' && (
+        {phase === "setup" && (
           <SetupOverlays
             startPoint={startPoint}
             destPoint={destPoint}
@@ -115,7 +126,7 @@ export default function App() {
             difficulty={difficulty}
           />
         )}
-        {phase === 'walking' && (
+        {phase === "walking" && (
           <WalkingOverlays
             startPoint={startPoint}
             destPoint={destPoint}
@@ -123,7 +134,7 @@ export default function App() {
             showRadius={true}
           />
         )}
-        {phase === 'completed' && (
+        {phase === "completed" && (
           <CompletedOverlays
             startPoint={startPoint}
             destPoint={destPoint}
@@ -144,25 +155,28 @@ export default function App() {
           >
             <IconBug size={20} />
           </IconLink>
-          <IconButton label="Achievements" onClick={() => openPanel('gamification')}>
+          <IconButton
+            label="Achievements"
+            onClick={() => openPanel("gamification")}
+          >
             <IconTrophy size={20} />
           </IconButton>
-          <IconButton label="History" onClick={() => openPanel('history')}>
+          <IconButton label="History" onClick={() => openPanel("history")}>
             <IconHistory size={20} />
           </IconButton>
         </div>
       </header>
 
       {/* Screens */}
-      {phase === 'setup' && <SetupScreen />}
-      {phase === 'walking' && <WalkingScreen />}
-      {phase === 'completed' && <CompletionScreen />}
+      {phase === "setup" && <SetupScreen />}
+      {phase === "walking" && <WalkingScreen />}
+      {phase === "completed" && <CompletionScreen />}
 
       <MapThemeToggle />
 
       {/* Panels */}
-      {panel === 'history' && <WalkHistoryPanel />}
-      {panel === 'gamification' && <GamificationPanel />}
+      {panel === "history" && <WalkHistoryPanel />}
+      {panel === "gamification" && <GamificationPanel />}
     </div>
   );
 }

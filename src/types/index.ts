@@ -5,7 +5,7 @@ export interface LatLng {
 }
 
 // ── Difficulty ──
-export type Difficulty = 'easy' | 'medium' | 'hard';
+export type Difficulty = "easy" | "medium" | "hard";
 
 // Thresholds in meters (how close you must get to "win")
 export const DIFFICULTY_THRESHOLDS: Record<Difficulty, number> = {
@@ -15,13 +15,13 @@ export const DIFFICULTY_THRESHOLDS: Record<Difficulty, number> = {
 };
 
 export const DIFFICULTY_LABELS: Record<Difficulty, string> = {
-  easy: 'Easy',
-  medium: 'Medium',
-  hard: 'Hard',
+  easy: "Easy",
+  medium: "Medium",
+  hard: "Hard",
 };
 
 // ── App Phase ──
-export type AppPhase = 'setup' | 'walking' | 'completed';
+export type AppPhase = "setup" | "walking" | "completed";
 
 // ── Walk ──
 export interface Walk {
@@ -35,7 +35,7 @@ export interface Walk {
   thresholdMeters: number;
   timerSetSeconds: number | null;
   elapsedSeconds: number;
-  status: 'completed' | 'cancelled';
+  status: "completed" | "cancelled";
 }
 
 // ── Gamification ──
@@ -54,7 +54,7 @@ export interface GamificationState {
 }
 
 // ── Map Theme ──
-export type MapTheme = 'light' | 'dark';
+export type MapTheme = "light" | "dark";
 
 // Last map viewport, persisted so it can be restored on launch.
 export interface MapViewState {

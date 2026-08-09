@@ -4,18 +4,18 @@
 /* ── Trail Marker design tokens ─────────────────────────────── */
 @theme {
   /* Palette */
-  --color-pine: #1b3a2a;        /* deep forest green — primary */
-  --color-pine-deep: #11271c;   /* darker press state */
-  --color-blaze: #e85d2f;       /* trail-blaze orange — destination / target */
-  --color-blaze-deep: #c44a1f;  /* darker press state */
-  --color-bone: #faf7f0;        /* paper surface */
-  --color-sand: #efe8da;        /* raised/alternate panel */
-  --color-ink: #1e2826;         /* charcoal text */
-  --color-ink-muted: #5e6b64;   /* muted text */
-  --color-moss: #7fa883;        /* calm secondary green / success */
-  --color-moss-soft: #e4ede3;   /* soft moss tint */
-  --color-live: #1f9e8a;        /* "you are here" GPS teal */
-  --color-line: #ddd4c2;        /* hairline on bone */
+  --color-pine: #1b3a2a; /* deep forest green — primary */
+  --color-pine-deep: #11271c; /* darker press state */
+  --color-blaze: #e85d2f; /* trail-blaze orange — destination / target */
+  --color-blaze-deep: #c44a1f; /* darker press state */
+  --color-bone: #faf7f0; /* paper surface */
+  --color-sand: #efe8da; /* raised/alternate panel */
+  --color-ink: #1e2826; /* charcoal text */
+  --color-ink-muted: #5e6b64; /* muted text */
+  --color-moss: #7fa883; /* calm secondary green / success */
+  --color-moss-soft: #e4ede3; /* soft moss tint */
+  --color-live: #1f9e8a; /* "you are here" GPS teal */
+  --color-line: #ddd4c2; /* hairline on bone */
 
   /* Semantic alert colors (theme-aware, see .theme-dark below) */
   --color-danger-bg: #fee2e2;

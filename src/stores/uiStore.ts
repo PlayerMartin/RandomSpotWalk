@@ -1,6 +1,6 @@
-import { create } from 'zustand';
+import { create } from "zustand";
 
-type PanelId = 'history' | 'gamification' | null;
+type PanelId = "history" | "gamification" | null;
 
 interface UiState {
   panel: PanelId;

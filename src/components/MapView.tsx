@@ -10,10 +10,11 @@ import { useSettingsStore } from "../stores/settingsStore";
 import { useAppStore } from "../stores/appStore";
 
 // ── Custom divIcons (Leaflet's default marker PNGs 404 under bundlers) ──
-const DEFAULT_LOCATION: LatLng = { lat: 48.8584, lng: 2.2945 }; // centered-ish
+const DEFAULT_LOCATION: LatLng = { lat: 48.21, lng: 16.36 }; // centered-ish
 // Initial viewport: whatever was last saved, else the default.
-const INITIAL_CENTER = useSettingsStore.getState().mapView?.center ?? DEFAULT_LOCATION;
-const INITIAL_ZOOM = useSettingsStore.getState().mapView?.zoom ?? 3;
+const INITIAL_CENTER =
+  useSettingsStore.getState().mapView?.center ?? DEFAULT_LOCATION;
+const INITIAL_ZOOM = useSettingsStore.getState().mapView?.zoom ?? 5; // default zooms in on Europe (center = Paris)
 
 // Start marker: colored via CSS so it follows the current theme.
 const startIcon = L.divIcon({
@@ -59,10 +60,9 @@ function MapController({
   useEffect(() => {
     const onMoveEnd = () => {
       const c = map.getCenter();
-      useSettingsStore.getState().setMapView(
-        { lat: c.lat, lng: c.lng },
-        map.getZoom(),
-      );
+      useSettingsStore
+        .getState()
+        .setMapView({ lat: c.lat, lng: c.lng }, map.getZoom());
     };
     map.on("moveend", onMoveEnd);
     return () => {
@@ -100,7 +100,7 @@ function MapController({
       // cleared (Cancel), keep the current zoom/center instead.
       restoredRef.current = true;
       const saved = useSettingsStore.getState().mapView;
-      map.setView(saved?.center ?? DEFAULT_LOCATION, saved?.zoom ?? 3);
+      map.setView(saved?.center ?? DEFAULT_LOCATION, saved?.zoom ?? 5);
     }
   }, [startPoint, destPoint, radiusKm, map, phase]);
 
@@ -166,13 +166,13 @@ function MapVisibilityFix() {
   const map = useMap();
   useEffect(() => {
     const onVisible = () => {
-      if (document.visibilityState === 'visible') map.invalidateSize();
+      if (document.visibilityState === "visible") map.invalidateSize();
     };
-    document.addEventListener('visibilitychange', onVisible);
-    window.addEventListener('pageshow', onVisible); // bfcache back/forward restore
+    document.addEventListener("visibilitychange", onVisible);
+    window.addEventListener("pageshow", onVisible); // bfcache back/forward restore
     return () => {
-      document.removeEventListener('visibilitychange', onVisible);
-      window.removeEventListener('pageshow', onVisible);
+      document.removeEventListener("visibilitychange", onVisible);
+      window.removeEventListener("pageshow", onVisible);
     };
   }, [map]);
   return null;

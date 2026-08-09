@@ -1,4 +1,4 @@
-import type { LatLng } from '../types';
+import type { LatLng } from "../types";
 
 const EARTH_RADIUS_KM = 6371;
 const KM_PER_DEG_LAT = 111.32;
@@ -63,7 +63,8 @@ export function circleBounds(
 ): { north: number; south: number; east: number; west: number } {
   const dLat = radiusMeters / (KM_PER_DEG_LAT * 1000);
   const dLng =
-    radiusMeters / (KM_PER_DEG_LAT * 1000 * Math.max(Math.cos(toRad(center.lat)), 1e-6));
+    radiusMeters /
+    (KM_PER_DEG_LAT * 1000 * Math.max(Math.cos(toRad(center.lat)), 1e-6));
   return {
     north: center.lat + dLat,
     south: center.lat - dLat,

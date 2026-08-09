@@ -1,5 +1,5 @@
-import { create } from 'zustand';
-import type { LatLng } from '../types';
+import { create } from "zustand";
+import type { LatLng } from "../types";
 
 interface GpsState {
   position: LatLng | null;
@@ -24,13 +24,13 @@ export const useGpsStore = create<GpsState>((set, get) => ({
 
   startWatching: () => {
     if (get().watching) return;
-    if (!('geolocation' in navigator)) {
+    if (!("geolocation" in navigator)) {
       // Mobile needs a secure context (HTTPS/localhost) — plain http blocks it silently.
       set({
         error:
           window.isSecureContext === false
-            ? 'GPS blocked: mobile browsers need HTTPS. Open this app via https:// (or localhost).'
-            : 'Geolocation is not supported on this device/browser.',
+            ? "GPS blocked: mobile browsers need HTTPS. Open this app via https:// (or localhost)."
+            : "Geolocation is not supported on this device/browser.",
       });
       return;
     }
@@ -42,14 +42,15 @@ export const useGpsStore = create<GpsState>((set, get) => ({
         });
       },
       (err) => {
-        let msg = 'Unable to get your location.';
+        let msg = "Unable to get your location.";
         if (err.code === err.PERMISSION_DENIED) {
           msg =
-            'Location permission denied. Allow location access (check browser/site settings), or tap the map to set your start point.';
+            "Location permission denied. Allow location access (check browser/site settings), or tap the map to set your start point.";
         } else if (err.code === err.POSITION_UNAVAILABLE) {
-          msg = 'Location unavailable. Try again or tap the map manually.';
+          msg = "Location unavailable. Try again or tap the map manually.";
         } else if (err.code === err.TIMEOUT) {
-          msg = 'Location request timed out. Go near a window or outside for a GPS fix.';
+          msg =
+            "Location request timed out. Go near a window or outside for a GPS fix.";
         }
         set({ error: msg });
       },
@@ -61,7 +62,7 @@ export const useGpsStore = create<GpsState>((set, get) => ({
   stopWatching: () => {
     const { watchId, watching } = get();
     if (!watching) return;
-    if (watchId !== null && 'geolocation' in navigator) {
+    if (watchId !== null && "geolocation" in navigator) {
       navigator.geolocation.clearWatch(watchId);
     }
     set({ watching: false, watchId: null });
@@ -72,7 +73,7 @@ export const useGpsStore = create<GpsState>((set, get) => ({
   // stored position can't stay stuck on the pre-sleep value (gotchas.md #8).
   restartWatching: () => {
     const { watchId, watching } = get();
-    if (watching && watchId !== null && 'geolocation' in navigator) {
+    if (watching && watchId !== null && "geolocation" in navigator) {
       navigator.geolocation.clearWatch(watchId);
     }
     set({ watching: false, watchId: null });
@@ -84,12 +85,12 @@ export const useGpsStore = create<GpsState>((set, get) => ({
   // the permission prompt) even while a watch is active, so the button works
   // right after enabling GPS — see docs/technical/flows.md.
   requestCurrentPosition: (onSuccess, onError) => {
-    if (!('geolocation' in navigator)) {
+    if (!("geolocation" in navigator)) {
       set({
         error:
           window.isSecureContext === false
-            ? 'Location is blocked: this app needs HTTPS. Open it via https:// (or localhost).'
-            : 'This device/browser does not support geolocation.',
+            ? "Location is blocked: this app needs HTTPS. Open it via https:// (or localhost)."
+            : "This device/browser does not support geolocation.",
       });
       onError?.(null);
       return;
@@ -97,20 +98,23 @@ export const useGpsStore = create<GpsState>((set, get) => ({
     set({ error: null });
     navigator.geolocation.getCurrentPosition(
       (pos) => {
-        const p: LatLng = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+        const p: LatLng = {
+          lat: pos.coords.latitude,
+          lng: pos.coords.longitude,
+        };
         set({ position: p, error: null });
         onSuccess?.(p);
       },
       (err) => {
-        let msg = 'Unable to get your location.';
+        let msg = "Unable to get your location.";
         if (err.code === err.PERMISSION_DENIED) {
           msg =
-            'Location access is blocked. Allow location for this site in your browser settings, then try again.';
+            "Location access is blocked. Allow location for this site in your browser settings, then try again.";
         } else if (err.code === err.POSITION_UNAVAILABLE) {
           msg =
-            'GPS is off. Turn on Location Services (your device\'s location toggle), then tap Use my location again.';
+            "GPS is off. Turn on Location Services (your device's location toggle), then tap Use my location again.";
         } else if (err.code === err.TIMEOUT) {
-          msg = 'Location request timed out. Please try again.';
+          msg = "Location request timed out. Please try again.";
         }
         set({ error: msg });
         onError?.(err);
