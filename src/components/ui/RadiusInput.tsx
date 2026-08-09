@@ -2,10 +2,12 @@ export function RadiusInput({
   value,
   onChange,
   error,
+  onEnter,
 }: {
   value: string;
   onChange: (text: string) => void;
   error?: string | null;
+  onEnter?: () => void;
 }) {
   const invalid = !!error;
   return (
@@ -31,6 +33,15 @@ export function RadiusInput({
                 cleaned.slice(firstDot + 1).replace(/\./g, "");
             }
             onChange(cleaned);
+          }}
+          onKeyDown={(e) => {
+            // Enter confirms the radius: validate it, then close the keyboard
+            // (blur) only when the value is valid.
+            if (e.key === "Enter") {
+              e.preventDefault();
+              const valid = onEnter?.() ?? true;
+              if (valid) e.currentTarget.blur();
+            }
           }}
           aria-invalid={invalid || undefined}
           className={`w-full rounded-xl border bg-bone py-2.5 pl-3.5 pr-12 text-lg font-bold text-ink outline-none transition ${

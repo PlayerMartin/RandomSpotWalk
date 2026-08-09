@@ -85,6 +85,10 @@ export function SetupScreen() {
     startWalk();
   };
 
+  // Enter in the radius field: validate only — do NOT generate a spot or start
+  // the walk. Return validity so the input can blur (close the keyboard) on success.
+  const handleRadiusEnter = (): boolean => validateRadius();
+
   const handleToggleTimer = (enabled: boolean) => {
     setTimerEnabled(enabled);
     setTimer(enabled ? timerMinutes * 60 : null);
@@ -156,6 +160,7 @@ export function SetupScreen() {
               value={radiusDraft}
               onChange={handleRadiusText}
               error={radiusError}
+              onEnter={handleRadiusEnter}
             />
             <DifficultySelector value={difficulty} onChange={setDifficulty} />
             <TimerToggle
